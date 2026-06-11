@@ -1,0 +1,76 @@
+FIRAT ÜNİVERSİTESİ
+TEKNOLOJİ FAKÜLTESİ
+Yazılım Mühendisliği Bölümü
+CO-FORGE - İŞ PAKETİ (WORK PACKAGE) DOKÜMANTASYONU
+Geliştiren
+235541096 BEYZA POLAT
+Web Tasarımı ve Programlama
+Eyüp ERÖZ ve Oğuzhan Katar
+1. KULLANILACAK TEKNOLOJİLER
+  Mimari Tasarım ve Veritabanı: MySQL, Milvus, SQLite
+  Core Backend ve REST API: Python, Django, Django REST Framework (DRF)
+  NLP ve Akıllı Eşleştirme: Python, spaCy, OpenAI API
+  Web ve Mobil Frontend: HTML5, CSS3, JavaScript, Flutter, React Native
+  Otonom AI Scrum Master: OpenAI API
+  Değerlendirme ve Puanlama Algoritması: Python, NLP Kütüphaneleri
+  Test ve Canlıya Alma: Git, GitHub, Docker, Nginx, Gunicorn
+2. İŞ PAKETLERİ VE HAFTALIK DAĞILIM (11 Haftalık)
+1. Hafta: İş Paketlerinin Hazırlanması ve Planlama
+Kapsam: Projenin genel hatlarının, hedef kitlenin ve gereksinimlerin kağıt üzerinde netleştirilmesi.
+Görevler: Gereksinim analizi dokümanının yazılması, web ve Flutter mobil uygulaması için ekran taslaklarının (Wireframe) ve kullanıcı akış (User Flow) diyagramlarının çizilmesi.
+Beklenen Çıktı: Onaylanmış gereksinim belgesi ve arayüz taslakları.
+2. Hafta: Mimari Tasarım ve Veritabanı Kurulumu
+Kapsam: Verilerin tutulacağı yapının tasarlanması.
+Görevler: MySQL için Varlık-İlişki (ER) diyagramlarının (Kullanıcı, İlan, Takım, Yetkinlik tabloları) tasarlanması ve ilişkilerin (Foreign Key) kurulması.
+Beklenen Çıktı: Kodlamaya hazır, eksiksiz veritabanı şeması.
+3. Hafta: Core Backend ve REST API (Başlangıç)
+Kapsam: Projenin sunucu tarafı iskeletinin ayağa kaldırılması.
+Görevler: Django projesinin başlatılması, MySQL bağlantılarının yapılması, JWT tabanlı kullanıcı kayıt ve giriş (Auth) uç noktalarının yazılması.
+Beklenen Çıktı: Kullanıcı doğrulama işlemlerini yapabilen temel API altyapısı.
+4. Hafta: Backend'in Tamamlanması ve NLP Altyapısına Giriş
+Kapsam: Temel CRUD işlemlerinin bitirilip yapay zeka veritabanı hazırlıklarının başlaması.
+Görevler: İlan oluşturma/profil güncelleme için Django REST Framework (DRF) endpoint'lerinin tamamlanması. Milvus vektör veritabanının projeye entegre edilmesi.
+Beklenen Çıktı: Hatasız çalışan backend API'ları ve entegre edilmiş Milvus bağlantısı.
+5. Hafta: NLP ve Akıllı Eşleştirme (Geliştirme)
+Kapsam: Metin analizi ve yapay zeka etiketleme mantığının kodlanması.
+Görevler: OpenAI API (veya spaCy) kullanılarak, kullanıcıların girdiği ilan metinlerinden yetkinlik etiketlerinin (tag) otomatik olarak çıkarılması ve bunların vektörleştirilmesi.
+Beklenen Çıktı: Serbest metinden doğru yazılım dillerini/yetkinlikleri ayıklayabilen NLP servisi.
+6. Hafta: Eşleştirme Algoritması Bitişi ve Frontend Başlangıcı
+Kapsam: Akıllı eşleşmenin tamamlanıp, görsel arayüz kodlamalarına başlanması.
+Görevler: Milvus üzerinde vektörel benzerlik araması yapılarak eşleşme (matchmaking) algoritmasının tamamlanması. Web paneli (HTML/CSS/JS) iskeletinin oluşturulması.
+Beklenen Çıktı: Adayları başarıyla filtreleyen algoritma ve web arayüzünün ilk sayfaları.
+7. Hafta: Web ve Mobil Frontend (Geliştirme)
+Kapsam: Uygulamanın kullanıcı arayüzlerinin kodlanması ve API'lara bağlanması.
+Görevler: Flutter ile iOS/Android mobil ekranlarının tasarlanması, yazılan Django REST API'lerin hem web hem de mobil arayüzlere entegre edilmesi.
+Beklenen Çıktı: İlanların görüntülenebildiği, veri alışverişi yapabilen çalışan uygulamalar.
+8. Hafta: Frontend Tamamlanması ve Otonom AI Scrum Master Başlangıcı
+Kapsam: Arayüz işlemlerinin bitirilip, sistemin en yenilikçi AI özelliğine geçilmesi.
+Görevler: Takım kurulma ekranlarının tamamlanması. AI'ın ilan metnini okuyup görev listesi (Backlog) ve İş Kırılım Yapısı (WBS) oluşturmasını sağlayan prompt/algoritma mühendisliği.
+Beklenen Çıktı: Projeleri otomatik alt görevlere bölen yapay zeka taslağı.
+9. Hafta: AI Scrum Master Bitişi ve Değerlendirme Modülü Başlangıcı
+Kapsam: Görev dağıtımının otomatize edilmesi ve proje sonu geri bildirim sisteminin kurulması.
+Görevler: Yapay zekanın görevleri haftalık Sprint'lere/Gantt formatına dökmesi. Proje bitiminde kullanıcılara sunulacak 360 derece değerlendirme formlarının veritabanı ve arayüz altyapısının yazılması.
+Beklenen Çıktı: Takımları yönlendiren proje ekranı ve hazır anket formları.
+10. Hafta: Puanlama Algoritması ve Genel Testlere Giriş
+Kapsam: Güvenilirlik skorlarının hesaplanması ve projenin kalite kontrolüne başlanması.
+Görevler: Değerlendirme formlarından gelen metinlerin NLP ile yorumlanıp profil "Güvenilirlik Skoru"na dönüştürülmesi. Eşleşme, görev atama ve API süreçlerinin uçtan uca test edilmesi.
+Beklenen Çıktı: Dinamik profil skorlama sistemi ve tespit edilmiş hata (bug) raporları.
+11. Hafta: Testlerin Tamamlanması ve Canlıya Alma (Deployment)
+Kapsam: Hataların giderilip projenin sunucu ortamına taşınarak son kullanıcıya açılması.
+Görevler: Kalan test hatalarının (bug fix) çözülmesi, projenin Docker ile konteyner mimarisine alınması. Nginx ve Gunicorn konfigürasyonları ile uygulamanın canlı sunucuya yüklenmesi.
+Beklenen Çıktı: Herkesin erişebileceği, hatasız çalışan, canlı ortama alınmış CoForge platformu.
+3. OLASI RİSKLER VE B PLANI
+CoForge projesinin geliştirme sürecinde yenilikçi teknolojilerin (NLP, Vektör Veritabanı) kullanılması ve platformlar arası (Web & Mobil) geliştirme yapılması çeşitli teknik ve takvimsel riskleri barındırmaktadır. Bu doğrultuda belirlenen temel riskler ve acil durum planları (Plan B) aşağıda listelenmiştir:
+Risk 1: NLP ve Akıllı Eşleştirme (Milvus) Entegrasyonunun Gecikmesi
+Olası Durum: Yapay zekanın serbest metinlerden (Türkçe dil desteği zorlukları vb.) doğru yetkinlik etiketlerini çıkaramaması veya Milvus vektör veritabanının MySQL ile senkronizasyonunda yaşanabilecek mimari darboğazların belirlenen 4 haftalık sprint süresini aşması.
+B Planı: Sistemin ilk MVP (Minimum Uygulanabilir Ürün) sürümünde Vektör Veritabanı (Milvus) geçici olarak devre dışı bırakılacaktır. Eşleştirmeler, yapay zekanın çıkardığı anahtar kelimeler üzerinden standart ilişkisel veritabanı (MySQL) sorguları (Intersection/Kesişim mantığı) ile yapılacak; anlamsal (semantic) arama projenin Faz-2 aşamasına ertelenecektir.
+Risk 2: Otonom AI Scrum Master'ın Hatalı Görev Dağılımı Yapması
+Olası Durum: Otonom sistemin proje metnini yanlış yorumlayarak imkansız iş kırılım yapıları (WBS) oluşturması, mantıksız sprint hedefleri koyması veya halüsinasyon (hallucination) görerek ilgisiz görevler ataması.
+B Planı: "İnsan Onaylı Otonom" modeline geçilecektir. Yapay zeka görev dağılımını ve Gantt diyagramını yine otomatik çizecek, ancak bu liste doğrudan aktif olmak yerine taslak (Draft) olarak takıma sunulacaktır. Takım üyelerinden biri görevleri manuel olarak onayladıktan veya düzenledikten sonra süreç başlayacaktır.
+Risk 3: Mobil Arayüz (Flutter) Geliştirme Sürecinin Takvimi Aşması
+Olası Durum: Hem web (Django) hem de mobil (Flutter) arayüzlerinin eş zamanlı geliştirilmesinin tek kişilik bir eforla 11 haftalık takvimi zorlaması.
+B Planı: Öncelik tamamen Web (HTML/CSS/JS) platformuna verilecektir. Sistemin yönetim paneli, ilan verme ve Gantt diyagramı görüntüleme gibi karmaşık işlemleri sadece web üzerinden yapılandırılacaktır. Mobil uygulama ise veri girişinin yapılmadığı, sadece eşleşme bildirimlerinin ve takım sohbetlerinin görüntülendiği "Salt Okunur" (Read-Only) bir versiyona indirgenecektir.
+Risk 4: Değerlendirme Modülünde NLP Maliyet ve Hız Sorunları
+Olası Durum: Proje sonlarındaki 360 derece değerlendirme formlarının anlık olarak dış kaynaklı yapay zeka API'larına (örn. OpenAI) gönderilip analiz edilmesinin sistemde yavaşlamaya veya limit aşımlarına yol açması.
+B Planı: Geri bildirimlerin anlık olarak işlenmesi yerine, sistemde asenkron çalışan bir kuyruk (Celery/Redis vb.) veya gecelik (cron job) toplu işleme mantığı kurulacaktır. Böylece kullanıcı formları veritabanına sadece metin olarak kaydedilecek, puanlama işlemleri sunucunun boş olduğu gece saatlerinde otomatik olarak hesaplanıp profillere yansıtılacaktır.
+3. GANTT DİYAGRAMI

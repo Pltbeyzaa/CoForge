@@ -1,0 +1,22 @@
+Django>=5.1,<5.2
+djangorestframework>=3.15,<3.16
+django-environ>=0.12,<0.13
+django-cors-headers>=4.6,<4.7
+python-dotenv>=1.0,<2.0
+
+# DB / vector db
+mysqlclient>=2.2,<2.3
+pymysql>=1.1,<1.2
+cryptography>=42.0.0
+pymilvus>=2.5,<2.6
+
+# AI / NLP
+openai>=1.60,<2.0
+scikit-learn>=1.4,<2.0
+
+# Util
+requests>=2.32,<3.0
+
+# JWT Auth
+djangorestframework-simplejwt>=5.3,<6.0
+

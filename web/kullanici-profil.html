@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoForge — Kullanici Profili</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="dark-grid-bg">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="index.html"><h1 class="logo-text">CoForge</h1></a>
+        <nav class="topbar-actions">
+          <a class="btn btn-primary" href="ilan-ekle.html">Ilan Olustur</a>
+          <a class="btn btn-ghost" href="index.html">Ana Sayfa</a>
+          <a class="btn btn-ghost match-btn" href="matchmaking.html">
+            Eslesen Ilanlar
+            <span class="notif-dot" aria-hidden="true"></span>
+          </a>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema degistir"></button>
+          <div class="profile-menu" id="profileMenu">
+            <button
+              id="profileMenuToggle"
+              class="profile-menu-toggle"
+              type="button"
+              aria-label="Hesap menusu"
+              aria-haspopup="menu"
+              aria-expanded="false"
+            ></button>
+            <div class="profile-dropdown" role="menu" aria-label="Hesap islemleri">
+              <a href="kullanici-profil.html" role="menuitem">
+                <span class="menu-icon" aria-hidden="true">👤</span>
+                Profil
+              </a>
+              <a href="kullanici-profil.html#profile-ilanlar" role="menuitem">
+                <span class="menu-icon" aria-hidden="true">📁</span>
+                Ilanlarim
+              </a>
+              <button id="btnLogoutMenu" class="danger" type="button" role="menuitem">
+                <span class="menu-icon" aria-hidden="true">⏻</span>
+                Cikis
+              </button>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page profile-page">
+      <section class="container profile-layout">
+        <aside class="profile-sidebar glass-panel">
+          <div class="profile-avatar-wrap">
+            <div id="profileAvatarMount" class="coforge-avatar-host"></div>
+          </div>
+          <h1 class="profile-name profile-name-row">
+            <span id="profileNameText">-</span>
+            <span id="githubVerifiedBadge" class="github-verified-badge" hidden title="GitHub Dogrulandi" aria-label="GitHub Dogrulandi">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.55 17.43 4.9 12.78l1.42-1.41 3.23 3.23 8.13-8.14 1.42 1.42z"/></svg>
+              GitHub Verified
+            </span>
+          </h1>
+          <p id="profileTitleText" class="profile-title">-</p>
+          <div class="profile-score">⭐ 4.8 / 5.0 AI Guvenilirlik Skoru</div>
+
+          <a class="btn btn-ghost profile-edit-btn" href="profil-duzenle.html">Profili Duzenle</a>
+
+          <div class="profile-socials">
+            <a id="profileGithubLink" href="#" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.1.82-.26.82-.58v-2.2c-3.34.73-4.04-1.42-4.04-1.42-.55-1.4-1.34-1.77-1.34-1.77-1.1-.75.08-.73.08-.73 1.21.09 1.85 1.25 1.85 1.25 1.08 1.84 2.82 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.66-.3-5.47-1.32-5.47-5.9 0-1.3.47-2.36 1.24-3.2-.13-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.22A11.4 11.4 0 0 1 12 6.3c1.01 0 2.03.14 2.98.41 2.29-1.54 3.29-1.22 3.29-1.22.67 1.65.26 2.87.13 3.18.77.84 1.24 1.9 1.24 3.2 0 4.59-2.82 5.6-5.51 5.9.43.37.82 1.1.82 2.23v3.31c0 .32.22.69.83.58A12 12 0 0 0 12 .5Z"/></svg>
+            </a>
+            <a id="profileLinkedinLink" href="#" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1-.02-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.82-2.05 3.75-2.05C21 8.65 21 10.98 21 14v7h-4v-6.2c0-1.48-.03-3.38-2.06-3.38-2.07 0-2.38 1.62-2.38 3.28V21h-4V9Z"/></svg>
+            </a>
+          </div>
+        </aside>
+
+        <section class="profile-main">
+          <article class="glass-panel profile-intro">
+            <h2 id="profileIntroHeading">Hi, I'm - 👋</h2>
+            <p id="profileBioText">
+              AI destekli takim kurulumlari, full-stack urun gelistirme ve veri odakli proje yonetimi
+              alanlarinda calisiyorum. CoForge ile fikirleri dogru ekiplerle hizli sekilde urune donusturmeyi
+              hedefliyorum.
+            </p>
+
+            <h3>Languages &amp; Tools</h3>
+            <div id="profileSkillsList" class="profile-skills">
+              <span class="tag skill-tag skill-python">Python</span>
+              <span class="tag skill-tag skill-django">Django</span>
+              <span class="tag skill-tag skill-flutter">Flutter</span>
+              <span class="tag skill-tag skill-milvus">Milvus</span>
+              <span class="tag skill-tag skill-react">React</span>
+              <span class="tag skill-tag skill-sql">SQL</span>
+              <span class="tag skill-tag skill-docker">Docker</span>
+              <span class="tag skill-tag skill-nlp">NLP</span>
+            </div>
+          </article>
+
+          <article id="profile-ilanlar" class="glass-panel profile-ilanlar-panel" tabindex="-1">
+            <div class="profile-section-head">
+              <h3>Ilanlarim</h3>
+              <a class="btn btn-primary" href="ilan-ekle.html">Yeni Ilan</a>
+            </div>
+            <div id="profileIlanlarList" class="project-showcase-grid"></div>
+          </article>
+
+          <article class="glass-panel">
+            <div class="profile-section-head">
+              <h3>Projelerim</h3>
+              <button id="btnGithubImportProfile" class="github-import-btn" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.1.82-.26.82-.58v-2.2c-3.34.73-4.04-1.42-4.04-1.42-.55-1.4-1.34-1.77-1.34-1.77-1.1-.75.08-.73.08-.73 1.21.09 1.85 1.25 1.85 1.25 1.08 1.84 2.82 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.66-.3-5.47-1.32-5.47-5.9 0-1.3.47-2.36 1.24-3.2-.13-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.22A11.4 11.4 0 0 1 12 6.3c1.01 0 2.03.14 2.98.41 2.29-1.54 3.29-1.22 3.29-1.22.67 1.65.26 2.87.13 3.18.77.84 1.24 1.9 1.24 3.2 0 4.59-2.82 5.6-5.51 5.9.43.37.82 1.1.82 2.23v3.31c0 .32.22.69.83.58A12 12 0 0 0 12 .5Z"/></svg>
+                <span class="github-import-label">GitHub'dan Ice Aktar</span>
+                <span class="github-import-spinner" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div id="profileProjectsList" class="project-showcase-grid"></div>
+          </article>
+
+          <article id="profileStatsPanel" class="glass-panel">
+            <div class="profile-section-head">
+              <h3>CoForge Stats</h3>
+            </div>
+            <div class="profile-stats-grid">
+              <div class="metric-card stat-green">
+                <span>Tamamlanan Projeler</span>
+                <strong id="statCompletedProjects">0</strong>
+              </div>
+              <div class="metric-card stat-blue">
+                <span>Toplam Eslesme</span>
+                <strong id="statTotalMatches">0</strong>
+              </div>
+              <div class="metric-card stat-purple">
+                <span>Guncel Seri (Streak)</span>
+                <strong id="statStreakDays">0</strong>
+              </div>
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>CoForge Platform</p>
+      </div>
+    </footer>
+
+    <div id="githubConnectModalProfile" class="github-connect-modal" aria-hidden="true">
+      <div class="github-connect-backdrop" data-close-modal="true"></div>
+      <div class="github-connect-panel">
+        <div class="github-connect-head">
+          <h3>GitHub Profilini Bagla</h3>
+          <p>Projelerini ve yetkinliklerini aninda iceri aktarmak icin GitHub erisimini dogrula.</p>
+        </div>
+        <div class="github-connect-actions">
+          <button id="btnGithubQuickConnectProfile" class="btn btn-primary" type="button">GitHub Login (Hizli Baglanti)</button>
+        </div>
+        <div class="github-token-row">
+          <input id="githubTokenInputProfile" class="input" type="password" placeholder="Personal Access Token (opsiyonel)" />
+          <button id="btnGithubTokenConnectProfile" class="btn btn-ghost" type="button">Token ile Baglan</button>
+        </div>
+        <div class="github-load-track">
+          <div id="githubLoadFillProfile" class="github-load-fill"></div>
+        </div>
+        <div id="githubDetectedSkillsProfile" class="github-detected-skills"></div>
+        <div id="githubProjectSelectListProfile" class="github-project-select-list"></div>
+        <div class="github-connect-footer">
+          <button id="btnGithubModalCancelProfile" class="btn btn-ghost" type="button">Vazgec</button>
+          <button id="btnGithubImportConfirmProfile" class="btn btn-primary" type="button" disabled>Secilenleri Ice Aktar</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+      requireAuth();
+      authRequireCurrentUser();
+      coforgeInitTheme();
+
+      function initGlobalBackgroundSpotlight() {
+        const root = document.body;
+        root.style.setProperty("--bg-mouse-x", "50vw");
+        root.style.setProperty("--bg-mouse-y", "35vh");
+        window.addEventListener("mousemove", (event) => {
+          root.style.setProperty("--bg-mouse-x", `${event.clientX}px`);
+          root.style.setProperty("--bg-mouse-y", `${event.clientY}px`);
+        });
+      }
+
+      function initProfileMenu() {
+        const menu = document.getElementById("profileMenu");
+        const toggle = document.getElementById("profileMenuToggle");
+        if (!menu || !toggle) return;
+
+        toggle.addEventListener("click", () => {
+          const isOpen = menu.classList.toggle("open");
+          toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!menu.contains(event.target)) {
+            menu.classList.remove("open");
+            toggle.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+
+      document.getElementById("btnLogoutMenu")?.addEventListener("click", () => {
+        authClearSession();
+        window.location.href = "login.html";
+      });
+
+      function renderProfileAvatarMount(currentUser) {
+        const el = document.getElementById("profileAvatarMount");
+        if (!el || typeof coforgeRenderAvatarTo !== "function") return;
+        const saved = (localStorage.getItem("userProfilePic") || "").trim();
+        const fromUser = (currentUser && String(currentUser.avatar_url || "").trim()) || "";
+        coforgeRenderAvatarTo(el, fromUser || saved, "profile");
+      }
+
+      async function initCurrentUserProfile() {
+        let currentUser = authRequireCurrentUser();
+        const refreshed = await authRefreshCurrentUserFromBackend();
+        if (refreshed) currentUser = refreshed;
+        if (!currentUser) return;
+
+        const fullName = (currentUser.full_name || "").trim();
+        const title = (currentUser.title || "").trim();
+        const skills = Array.isArray(currentUser.skills) ? currentUser.skills.filter(Boolean) : [];
+
+        if (fullName) {
+          document.getElementById("profileNameText").textContent = fullName;
+          document.getElementById("profileIntroHeading").textContent = `Hi, I'm ${fullName} 👋`;
+        }
+        if (title) document.getElementById("profileTitleText").textContent = title;
+        renderProfileAvatarMount(currentUser);
+        if (skills.length > 0) {
+          document.getElementById("profileSkillsList").innerHTML = skills
+            .map((skill) => `<span class="tag skill-tag ${getSkillToneClass(skill)}">${skill}</span>`)
+            .join("");
+        }
+        const verifiedBadge = document.getElementById("githubVerifiedBadge");
+        if (verifiedBadge) verifiedBadge.hidden = !Boolean(currentUser.github_verified);
+        initProfileSocialLinks(currentUser);
+      }
+
+      function normalizeProfileUrl(value) {
+        const raw = String(value || "").trim();
+        if (!raw) return "";
+        if (/^https?:\/\//i.test(raw)) return raw;
+        return `https://${raw}`;
+      }
+
+      function bindSocialAnchor(anchor, url) {
+        if (!anchor) return;
+        const safeUrl = normalizeProfileUrl(url);
+        if (safeUrl) {
+          anchor.href = safeUrl;
+          anchor.target = "_blank";
+          anchor.rel = "noopener noreferrer";
+          anchor.classList.remove("is-missing");
+          anchor.title = "";
+          anchor.setAttribute("aria-disabled", "false");
+          anchor.removeAttribute("tabindex");
+          anchor.style.pointerEvents = "";
+        } else {
+          anchor.removeAttribute("href");
+          anchor.removeAttribute("target");
+          anchor.removeAttribute("rel");
+          anchor.classList.add("is-missing");
+          anchor.title = "Profil eklenmemis";
+          anchor.setAttribute("aria-disabled", "true");
+          anchor.setAttribute("tabindex", "-1");
+          anchor.style.pointerEvents = "none";
+        }
+      }
+
+      function initProfileSocialLinks(currentUser) {
+        const githubUrl = currentUser?.github_url || "";
+        const linkedinUrl = currentUser?.linkedin_url || "";
+        bindSocialAnchor(document.getElementById("profileGithubLink"), githubUrl);
+        bindSocialAnchor(document.getElementById("profileLinkedinLink"), linkedinUrl);
+      }
+
+      function getSkillToneClass(skillName) {
+        const name = String(skillName || "").toLowerCase();
+        if (name.includes("python")) return "tone-python";
+        if (name.includes("react")) return "tone-react";
+        if (name.includes("django")) return "tone-django";
+        if (name.includes("sql") || name.includes("postgres")) return "tone-sql";
+        if (name.includes("docker")) return "tone-docker";
+        if (name.includes("flutter")) return "tone-flutter";
+        if (name.includes("ml") || name.includes("ai") || name.includes("nlp")) return "tone-ai";
+        if (name.includes("javascript") || name.includes("typescript")) return "tone-js";
+        return "tone-default";
+      }
+
+      function getUserProjectsStorageKey(email) {
+        return `coforge_projects_${String(email || "").toLowerCase()}`;
+      }
+
+      function getCurrentUserProjects(currentUser) {
+        const email = (currentUser?.email || "").trim().toLowerCase();
+        if (!email) return [];
+        const raw = (localStorage.getItem(getUserProjectsStorageKey(email)) || "").trim();
+        if (!raw) return [];
+        try {
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (_err) {
+          return [];
+        }
+      }
+
+      function isUserIlan(project) {
+        if (!project || typeof project !== "object") return false;
+        if (project.source === "coforge_ilan") return true;
+        if (project.imported_from_github) return false;
+        const repo = String(project.repo_url || "").trim();
+        if (repo) return false;
+        const id = project.id ?? project.pk;
+        return id != null && id !== "";
+      }
+
+      function getCurrentUserIlanlar(currentUser) {
+        const email = (currentUser?.email || "").trim().toLowerCase();
+        if (!email) return [];
+        const fromList = getCurrentUserProjects(currentUser).filter(isUserIlan);
+        const localAll = typeof coforgeListAllLocalProjectPosts === "function" ? coforgeListAllLocalProjectPosts() : [];
+        const fromLocalStore = localAll.filter((p) => String(p.owner_email || "").trim().toLowerCase() === email);
+        const byId = new Map();
+        for (const p of fromList) {
+          const id = p.id ?? p.pk;
+          if (id == null || id === "") continue;
+          byId.set(String(id), p);
+        }
+        for (const p of fromLocalStore) {
+          const id = p.id ?? p.pk;
+          if (id == null || id === "") continue;
+          const key = String(id);
+          const prev = byId.get(key) || {};
+          byId.set(key, { ...prev, ...p });
+        }
+        return Array.from(byId.values()).sort((a, b) => {
+          const ta = Date.parse(a.created_at || a.createdAt || 0) || 0;
+          const tb = Date.parse(b.created_at || b.createdAt || 0) || 0;
+          return tb - ta;
+        });
+      }
+
+      function renderProfileIlanlar() {
+        const currentUser = authRequireCurrentUser();
+        if (!currentUser) return;
+        const container = document.getElementById("profileIlanlarList");
+        if (!container) return;
+
+        const ilanlar = getCurrentUserIlanlar(currentUser);
+        container.innerHTML = "";
+
+        if (!ilanlar.length) {
+          container.innerHTML = `
+            <article class="showcase-card">
+              <h4>Henuz ilan yok</h4>
+              <p>Olusturdugun CoForge ilanlari burada gorunur.</p>
+              <p><a class="btn btn-primary" href="ilan-ekle.html">Yeni ilan olustur</a></p>
+            </article>
+          `;
+          return;
+        }
+
+        ilanlar.forEach((ilan) => {
+          const id = ilan.id ?? ilan.pk;
+          const title = (ilan.title || "").trim() || "Basliksiz ilan";
+          const description = (ilan.description || "").trim() || "";
+          const shortDesc = description.length > 160 ? `${description.slice(0, 160)}...` : description;
+          let tags = [];
+          if (Array.isArray(ilan.required_skills_detail)) {
+            tags = ilan.required_skills_detail.map((x) => x.skill_name).filter(Boolean);
+          } else if (Array.isArray(ilan.skills)) {
+            tags = ilan.skills.map((s) => (typeof s === "string" ? s : String(s?.name || "").trim())).filter(Boolean);
+          }
+          const tagsHtml = tags.length
+            ? tags.map((t) => `<span class="tag">${t}</span>`).join("")
+            : '<span class="tag">Yetkinlik yok</span>';
+          const idNote = String(id).startsWith("local_") ? "Bu cihazda kayitli" : `Ilan #${id}`;
+
+          const card = document.createElement("article");
+          card.className = "showcase-card showcase-card-clickable";
+          card.innerHTML = `
+            <h4>${title}</h4>
+            <p>${shortDesc || "Aciklama yok."}</p>
+            <p class="profile-ilan-meta">${idNote}</p>
+            <div class="tags">${tagsHtml}</div>
+          `;
+          card.addEventListener("click", () => {
+            window.location.href = `ilan-detay.html?id=${encodeURIComponent(String(id))}`;
+          });
+          card.setAttribute("role", "button");
+          card.tabIndex = 0;
+          card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              window.location.href = `ilan-detay.html?id=${encodeURIComponent(String(id))}`;
+            }
+          });
+          container.appendChild(card);
+        });
+      }
+
+      function renderProfileProjects() {
+        const currentUser = authRequireCurrentUser();
+        if (!currentUser) return;
+        const container = document.getElementById("profileProjectsList");
+        if (!container) return;
+
+        const userProjects = getCurrentUserProjects(currentUser).filter((p) => !isUserIlan(p));
+        if (!userProjects.length) {
+          container.innerHTML = `
+            <article class="showcase-card">
+              <h4>Henuz proje bulunamadi</h4>
+              <p>Bu kullanici icin kayitli proje yok. Sadece kendi olusturdugun projeler burada listelenir.</p>
+            </article>
+          `;
+          return;
+        }
+
+        container.innerHTML = userProjects
+          .map((project) => {
+            const title = (project?.title || "").trim() || "Basliksiz Proje";
+            const description = (project?.description || "").trim() || "Aciklama bulunmuyor.";
+            const tags = Array.isArray(project?.skills)
+              ? project.skills
+                  .map((tag) => (typeof tag === "string" ? tag : String(tag?.name || "").trim()))
+                  .filter(Boolean)
+              : [];
+            const safeTags = tags.length
+              ? tags.map((tag) => `<span class="tag">${tag}</span>`).join("")
+              : '<span class="tag">Genel</span>';
+
+            return `
+              <article class="showcase-card">
+                <h4>${title}</h4>
+                <p>${description}</p>
+                <p class="repo-import-note">GitHub reposundan ice aktarildi</p>
+                ${project?.repo_url ? `<p><a class="repo-link" href="${project.repo_url}" target="_blank" rel="noopener noreferrer">Repo Linki</a></p>` : ""}
+                <div class="tags">${safeTags}</div>
+              </article>
+            `;
+          })
+          .join("");
+      }
+
+      function showToast(message, isError = false) {
+        const toast = document.createElement("div");
+        toast.className = `settings-toast${isError ? " error" : ""}`;
+        toast.innerHTML = `
+          <span class="settings-toast-icon">${isError ? "!" : "✓"}</span>
+          <span class="settings-toast-text">${message}</span>
+        `;
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add("show"));
+        window.setTimeout(() => {
+          toast.classList.remove("show");
+          toast.classList.add("hide");
+          window.setTimeout(() => toast.remove(), 360);
+        }, 3000);
+      }
+
+      function getGithubKeywordSkills(repos) {
+        const skillMap = {
+          django: "Django",
+          flask: "Flask",
+          fastapi: "FastAPI",
+          react: "React",
+          "next.js": "Next.js",
+          nextjs: "Next.js",
+          vue: "Vue.js",
+          angular: "Angular",
+          flutter: "Flutter",
+          docker: "Docker",
+          kubernetes: "Kubernetes",
+          postgres: "PostgreSQL",
+          postgresql: "PostgreSQL",
+          mysql: "MySQL",
+          mongodb: "MongoDB",
+          redis: "Redis",
+          firebase: "Firebase",
+          graphql: "GraphQL",
+          rest: "REST API",
+          api: "REST API",
+          tensorflow: "TensorFlow",
+          pytorch: "PyTorch",
+          nlp: "NLP",
+          openai: "OpenAI API",
+          langchain: "LangChain",
+        };
+        const found = new Set();
+        repos.forEach((repo) => {
+          const text = `${repo?.name || ""} ${repo?.description || ""}`.toLowerCase();
+          Object.entries(skillMap).forEach(([keyword, skill]) => {
+            if (text.includes(keyword)) found.add(skill);
+          });
+        });
+        return found;
+      }
+
+      function normalizeLanguageSkill(language) {
+        const map = {
+          JavaScript: "JavaScript",
+          TypeScript: "TypeScript",
+          Python: "Python",
+          Dart: "Dart",
+          Java: "Java",
+          "C#": "C#",
+          Go: "Go",
+          Rust: "Rust",
+          PHP: "PHP",
+          Ruby: "Ruby",
+          HTML: "HTML5",
+          CSS: "CSS3",
+          SQL: "SQL",
+        };
+        return map[language] || language;
+      }
+
+      async function fetchGithubPortfolio(username, token = "") {
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const resp = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`, { headers });
+        if (!resp.ok) {
+          throw new Error(resp.status === 404 || resp.status === 403 ? "Profil Bulunamadi" : "GitHub verisi alinamadi");
+        }
+        const repos = await resp.json();
+        const repoList = Array.isArray(repos) ? repos.filter((repo) => !repo.fork) : [];
+        const ranked = repoList
+          .slice()
+          .sort((a, b) => {
+            const aScore = (a?.stargazers_count || 0) * 1000 + new Date(a?.pushed_at || 0).getTime();
+            const bScore = (b?.stargazers_count || 0) * 1000 + new Date(b?.pushed_at || 0).getTime();
+            return bScore - aScore;
+          })
+          .slice(0, 4);
+
+        const languageSet = new Set();
+        ranked.forEach((repo) => {
+          if (repo?.language) languageSet.add(normalizeLanguageSkill(repo.language));
+        });
+        const keywordSkills = getGithubKeywordSkills(ranked);
+        const skills = Array.from(new Set([...Array.from(languageSet), ...Array.from(keywordSkills)])).slice(0, 12);
+
+        const projects = ranked.map((repo) => ({
+          title: repo?.name || "Basliksiz Proje",
+          description: (repo?.description || "GitHub reposundan ice aktarildi.").trim(),
+          repo_url: repo?.html_url || "",
+          skills: [normalizeLanguageSkill(repo?.language || "")].filter(Boolean),
+          stars: repo?.stargazers_count || 0,
+          updated_at: repo?.pushed_at || "",
+          imported_from_github: true,
+        }));
+
+        return { projects, skills };
+      }
+
+      function animateLoadBar(targetId, targetPercent = 92) {
+        const fill = document.getElementById(targetId);
+        if (!fill) return () => {};
+        let value = 0;
+        fill.style.width = "0%";
+        const timer = window.setInterval(() => {
+          value += Math.max(1, Math.floor((targetPercent - value) / 6));
+          if (value >= targetPercent) {
+            value = targetPercent;
+            window.clearInterval(timer);
+          }
+          fill.style.width = `${value}%`;
+        }, 90);
+        return () => {
+          window.clearInterval(timer);
+          fill.style.width = "100%";
+        };
+      }
+
+      let githubImportStateProfile = { username: "", token: "", projects: [], skills: [] };
+
+      function renderDetectedSkillsProfile(skills) {
+        const wrap = document.getElementById("githubDetectedSkillsProfile");
+        if (!wrap) return;
+        wrap.innerHTML = skills
+          .map((skill, idx) => `<span class="github-detected-pill" style="animation-delay:${idx * 0.05}s">${skill}</span>`)
+          .join("");
+      }
+
+      function renderProjectSelectionProfile(projects) {
+        const wrap = document.getElementById("githubProjectSelectListProfile");
+        const confirm = document.getElementById("btnGithubImportConfirmProfile");
+        if (!wrap || !confirm) return;
+        wrap.innerHTML = projects
+          .map((project, idx) => {
+            const title = (project?.title || "").trim() || "Basliksiz Proje";
+            return `
+              <article class="github-project-option">
+                <label>
+                  <input type="checkbox" class="github-project-checkbox-profile" value="${idx}" checked />
+                  <span>
+                    <strong>${title}</strong>
+                    <span class="github-project-meta">★ ${project?.stars || 0}</span>
+                  </span>
+                </label>
+              </article>
+            `;
+          })
+          .join("");
+        confirm.disabled = !projects.length;
+      }
+
+      function openGithubModalProfile() {
+        const modal = document.getElementById("githubConnectModalProfile");
+        if (!modal) return;
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeGithubModalProfile() {
+        const modal = document.getElementById("githubConnectModalProfile");
+        if (!modal) return;
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+      }
+
+      async function beginGithubFetchProfile(useToken = false) {
+        const currentUser = authRequireCurrentUser();
+        if (!currentUser) return;
+        const username = window.prompt("GitHub kullanici adini girin:");
+        if (!username || !username.trim()) return;
+        const token = useToken ? String(document.getElementById("githubTokenInputProfile")?.value || "").trim() : "";
+        const stopLoad = animateLoadBar("githubLoadFillProfile");
+
+        try {
+          const { projects, skills } = await fetchGithubPortfolio(username.trim(), token);
+          githubImportStateProfile = { username: username.trim(), token, projects, skills };
+          renderDetectedSkillsProfile(skills);
+          renderProjectSelectionProfile(projects);
+          stopLoad();
+        } catch (_err) {
+          showToast("Profil Bulunamadi", true);
+        }
+      }
+
+      function finalizeGithubImportProfile() {
+        const currentUser = authRequireCurrentUser();
+        if (!currentUser) return;
+        const checks = Array.from(document.querySelectorAll(".github-project-checkbox-profile:checked"));
+        const selectedIndexes = checks.map((el) => Number(el.value)).filter((n) => Number.isFinite(n));
+        const selectedProjects = selectedIndexes.map((idx) => githubImportStateProfile.projects[idx]).filter(Boolean);
+        const key = getUserProjectsStorageKey(currentUser.email);
+        let existing = [];
+        try {
+          const raw = (localStorage.getItem(key) || "").trim();
+          const parsed = raw ? JSON.parse(raw) : [];
+          existing = Array.isArray(parsed) ? parsed : [];
+        } catch (_err) {
+          existing = [];
+        }
+        const keptIlan = existing.filter(isUserIlan);
+        const merged = [...keptIlan, ...selectedProjects];
+        localStorage.setItem(key, JSON.stringify(merged.slice(0, 30)));
+        authSetCurrentUser({
+          ...currentUser,
+          github_username: githubImportStateProfile.username || currentUser.github_username || "",
+          github_verified: true,
+          skills: githubImportStateProfile.skills.length ? githubImportStateProfile.skills : currentUser.skills || [],
+        });
+        initCurrentUserProfile();
+        renderProfileIlanlar();
+        renderProfileProjects();
+        closeGithubModalProfile();
+        showToast("Secilen projeler profile eklendi.");
+      }
+
+      let profileStatsLoadPromise = null;
+
+      function loadUserStats() {
+        if (profileStatsLoadPromise) return profileStatsLoadPromise;
+        profileStatsLoadPromise = (async () => {
+          if (typeof authIsMockSession === "function" && authIsMockSession()) {
+            return { completed_projects: 0, total_matches: 0, streak_days: 0 };
+          }
+          try {
+            const resp = await fetch(`${authGetApiBase()}/me/stats/`, {
+              method: "GET",
+              headers: authHeaders(),
+            });
+            return await authParseResponse(resp);
+          } catch (_err) {
+            return { completed_projects: 0, total_matches: 0, streak_days: 0 };
+          }
+        })();
+        return profileStatsLoadPromise;
+      }
+
+      function animateStatCounter(elementId, targetValue, durationMs = 520) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        const target = Math.max(0, Math.floor(Number(targetValue) || 0));
+        const startTs = performance.now();
+        function tick(now) {
+          const t = Math.min(1, (now - startTs) / durationMs);
+          const eased = 1 - (1 - t) * (1 - t);
+          const shown = Math.round(eased * target);
+          el.textContent = String(shown);
+          if (t < 1) requestAnimationFrame(tick);
+          else el.textContent = String(target);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      function setupProfileStatsCounterOnView() {
+        const panel = document.getElementById("profileStatsPanel");
+        if (!panel) return;
+        let done = false;
+        const observer = new IntersectionObserver(
+          async (entries) => {
+            if (done) return;
+            if (!entries.some((e) => e.isIntersecting)) return;
+            done = true;
+            observer.disconnect();
+            const data = await loadUserStats();
+            const completed = Number(data?.completed_projects ?? 0) || 0;
+            const matches = Number(data?.total_matches ?? 0) || 0;
+            const streak = Number(data?.streak_days ?? 0) || 0;
+            animateStatCounter("statCompletedProjects", completed);
+            animateStatCounter("statTotalMatches", matches);
+            animateStatCounter("statStreakDays", streak);
+          },
+          { threshold: 0.22 }
+        );
+        observer.observe(panel);
+      }
+
+      async function bootstrapProfilePage() {
+        initGlobalBackgroundSpotlight();
+        initProfileMenu();
+        renderProfileAvatarMount(authGetCurrentUser());
+        loadUserStats();
+        setupProfileStatsCounterOnView();
+        await initCurrentUserProfile();
+        renderProfileIlanlar();
+        renderProfileProjects();
+        if (location.hash === "#profile-ilanlar") {
+          requestAnimationFrame(() => {
+            document.getElementById("profile-ilanlar")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+        }
+        coforgeInitHeaderAvatar();
+        document.getElementById("btnGithubImportProfile")?.addEventListener("click", openGithubModalProfile);
+        document.getElementById("btnGithubQuickConnectProfile")?.addEventListener("click", () => beginGithubFetchProfile(false));
+        document.getElementById("btnGithubTokenConnectProfile")?.addEventListener("click", () => beginGithubFetchProfile(true));
+        document.getElementById("btnGithubImportConfirmProfile")?.addEventListener("click", finalizeGithubImportProfile);
+        document.getElementById("btnGithubModalCancelProfile")?.addEventListener("click", closeGithubModalProfile);
+        document.querySelector("#githubConnectModalProfile [data-close-modal='true']")?.addEventListener("click", closeGithubModalProfile);
+      }
+
+      bootstrapProfilePage();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoForge — Proje & Ekip Platformu</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      #coforge-login-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #141A36;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #coforge-login-splash.splash-light {
+        background: #F3F4F6;
+      }
+      .coforge-splash-inner {
+        text-align: center;
+        padding: 0 40px;
+        max-width: 480px;
+      }
+      .coforge-splash-title {
+        font-size: clamp(2.6rem, 7vw, 4rem);
+        font-weight: 800;
+        color: #FCFF70;
+        letter-spacing: 0.06em;
+        margin: 0 0 18px;
+        line-height: 1.1;
+      }
+      #coforge-login-splash.splash-light .coforge-splash-title {
+        color: #9B1C1C;
+      }
+      .coforge-splash-tagline {
+        font-size: 1rem;
+        color: #9EA5BD;
+        letter-spacing: 0.02em;
+        line-height: 1.72;
+        margin: 0 0 52px;
+      }
+      #coforge-login-splash.splash-light .coforge-splash-tagline {
+        color: #4B5563;
+      }
+      .coforge-splash-spinner {
+        width: 26px;
+        height: 26px;
+        border: 2.5px solid rgba(252, 255, 112, 0.18);
+        border-top-color: rgba(252, 255, 112, 0.65);
+        border-radius: 50%;
+        animation: coforge-spin 0.85s linear infinite;
+        margin: 0 auto;
+      }
+      #coforge-login-splash.splash-light .coforge-splash-spinner {
+        border-color: rgba(155, 28, 28, 0.15);
+        border-top-color: rgba(155, 28, 28, 0.60);
+      }
+      @keyframes coforge-spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body class="dark-grid-bg">
+
+    <!-- Login sonrası geçiş overlay — sessionStorage flag'i yoksa JS anında gizler -->
+    <div id="coforge-login-splash" aria-hidden="true" aria-label="Yükleniyor">
+      <div class="coforge-splash-inner">
+        <h1 class="coforge-splash-title">Co-Forge</h1>
+        <p class="coforge-splash-tagline">Fikirleri koda, kodları geleceğe<br>dönüştürecek doğru ekibi kur.</p>
+        <div class="coforge-splash-spinner" role="status" aria-label="Yükleniyor"></div>
+      </div>
+    </div>
+    <script>
+      // Senkron çalışır — ilk paint öncesi overlay'i aktif eder veya gizler
+      (function () {
+        var flag = sessionStorage.getItem("coforge_post_login");
+        var overlay = document.getElementById("coforge-login-splash");
+        if (!overlay) return;
+        if (!flag) { overlay.style.display = "none"; return; }
+
+        sessionStorage.removeItem("coforge_post_login");
+        var theme = localStorage.getItem("coforge_theme") || "dark";
+        if (theme === "light") overlay.classList.add("splash-light");
+        overlay.removeAttribute("aria-hidden");
+
+        window.setTimeout(function () {
+          overlay.style.transition = "opacity 0.55s ease";
+          overlay.style.opacity = "0";
+          overlay.addEventListener("transitionend", function () {
+            overlay.style.display = "none";
+          }, { once: true });
+        }, 1500);
+      })();
+    </script>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="index.html"><h1 class="logo-text">CoForge</h1></a>
+        <nav class="topbar-actions">
+          <a class="btn btn-primary" href="ilan-ekle.html">Ilan Olustur</a>
+          <a class="btn btn-ghost" href="index.html">Ana Sayfa</a>
+          <a class="btn btn-ghost match-btn" href="matchmaking.html">
+            Eslesen Ilanlar
+            <span class="notif-dot" aria-hidden="true"></span>
+          </a>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema degistir"></button>
+          <div class="profile-menu" id="profileMenu">
+            <button
+              id="profileMenuToggle"
+              class="profile-menu-toggle"
+              type="button"
+              aria-label="Hesap menusu"
+              aria-haspopup="menu"
+              aria-expanded="false"
+            ></button>
+            <div class="profile-dropdown" id="profileDropdown" role="menu" aria-label="Hesap islemleri">
+              <a href="kullanici-profil.html" role="menuitem">
+                <span class="menu-icon" aria-hidden="true">👤</span>
+                Profil
+              </a>
+              <a href="kullanici-profil.html#profile-ilanlar" role="menuitem">
+                <span class="menu-icon" aria-hidden="true">📁</span>
+                Ilanlarim
+              </a>
+              <button id="btnLogoutMenu" class="danger" type="button" role="menuitem">
+                <span class="menu-icon" aria-hidden="true">⏻</span>
+                Cikis
+              </button>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="container">
+        <div class="hero-strip">
+          <div>
+            <h1>Project Match Feed</h1>
+            <p>Yazilim projeleri, ekip ihtiyaclari ve teknoloji stack bazli ilan akisi.</p>
+          </div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="ilan-ekle.html">Yeni Proje Ilani</a>
+            <button id="btnRefreshPosts" class="btn btn-ghost" type="button">Akisi Yenile</button>
+          </div>
+        </div>
+
+        <p id="feedMeta" class="feed-meta-top">Ilanlar yukleniyor...</p>
+        <div id="postsFeed" class="feed-grid"></div>
+
+        <div class="glass-panel" style="margin-top: 22px; padding: 18px">
+          <div class="profile-section-head">
+            <h3>Sizin Icin Sectigimiz Ilanlar</h3>
+          </div>
+          <p id="personalizedMeta" class="feed-meta-top">Profilinize gore oneriler hazirlaniyor...</p>
+          <div id="personalizedMatches" class="feed-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>CoForge Platform</p>
+      </div>
+    </footer>
+    <script src="auth.js"></script>
+    <script>
+      requireAuth();
+
+      // Eski mock/test ilanlarini tarayicidan bir kerelik temizle
+      (function purgeLocalMockPosts() {
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith("coforge_local_post_") || key === "projects")) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach((k) => localStorage.removeItem(k));
+      })();
+
+      coforgeInitTheme();
+
+      function initGlobalBackgroundSpotlight() {
+        const root = document.body;
+        root.style.setProperty("--bg-mouse-x", "50vw");
+        root.style.setProperty("--bg-mouse-y", "35vh");
+
+        window.addEventListener("mousemove", (event) => {
+          root.style.setProperty("--bg-mouse-x", `${event.clientX}px`);
+          root.style.setProperty("--bg-mouse-y", `${event.clientY}px`);
+        });
+      }
+
+      function setFeedMeta(text) {
+        document.getElementById("feedMeta").textContent = text;
+      }
+
+      function renderPosts(posts) {
+        const feedEl = document.getElementById("postsFeed");
+        feedEl.innerHTML = "";
+
+        (posts || []).forEach((post) => {
+          const card = document.createElement("article");
+          card.className = "job-card project-card";
+          const skills = (post.required_skills_detail || []).map((x) => x.skill_name).filter(Boolean);
+          const owner = (post.owner_email || "Takim").trim();
+          const initial = (owner[0] || "T").toUpperCase();
+          const avHtml =
+            typeof coforgeAvatarOuterHTML === "function"
+              ? coforgeAvatarOuterHTML(post.owner_avatar_url || post.owner_avatar || "", "card")
+              : `<div class="avatar">${initial}</div>`;
+          const shortDesc = `${(post.description || "").slice(0, 180)}${(post.description || "").length > 180 ? "..." : ""}`;
+          const skillTags = skills
+            .slice(0, 4)
+            .map((s) => `<span class="tag">${s}</span>`)
+            .join("");
+
+          card.innerHTML = `
+            <div class="job-card-head">
+              <div class="author">
+                ${avHtml}
+                <div>
+                  <div class="author-name">${owner}</div>
+                  <div class="author-role">Ilan Sahibi</div>
+                </div>
+              </div>
+              <span class="status-badge"><span class="pulse-dot"></span>OPEN</span>
+            </div>
+            <h3 class="job-title">${post.title || "-"}</h3>
+            <div class="job-meta-row">
+              <span class="chip">Takim: ${post.max_team_size || "-"}</span>
+              <span class="chip">Yetenek: ${skills.length}</span>
+            </div>
+            <div class="tags">
+              ${skillTags || '<span class="tag">Belirtilmedi</span>'}
+            </div>
+            <p class="job-desc">${shortDesc}</p>
+          `;
+          card.addEventListener("click", () => {
+            const detailId = post.id || post.pk || "";
+            const query = detailId ? `?id=${encodeURIComponent(String(detailId))}` : "";
+            window.location.href = `ilan-detay.html${query}`;
+          });
+          feedEl.appendChild(card);
+        });
+
+        initCardSpotlight();
+      }
+
+      function renderPersonalizedMatches(matches) {
+        const wrap = document.getElementById("personalizedMatches");
+        if (!wrap) return;
+        const rows = Array.isArray(matches) ? matches : [];
+        if (!rows.length) {
+          wrap.innerHTML = `
+            <article class="showcase-card">
+              <h4>Yuksek eslesme bulunamadi</h4>
+              <p>Profilinize yeni yetkinlikler ekleyip tekrar deneyebilirsiniz.</p>
+            </article>
+          `;
+          return;
+        }
+        wrap.innerHTML = rows
+          .map((m) => {
+            const title = m.project_title || `Proje #${m.project_id || "-"}`;
+            const score = Number(m.similarity_percent || 0);
+            const req = Array.isArray(m.required_skills) ? m.required_skills : [];
+            const tags = req.length ? req.slice(0, 4).map((s) => `<span class="tag">${s}</span>`).join("") : '<span class="tag">Belirtilmedi</span>';
+            return `
+              <article class="job-card project-card" data-go-project-id="${m.project_id || ""}">
+                <div class="job-card-head">
+                  <div class="author">
+                    <div class="avatar">AI</div>
+                    <div>
+                      <div class="author-name">Smart Discovery</div>
+                      <div class="author-role">Semantic + Exact Match</div>
+                    </div>
+                  </div>
+                  <span class="status-badge">%${Math.max(0, Math.min(100, Math.round(score)))}</span>
+                </div>
+                <h3 class="job-title">${title}</h3>
+                <div class="tags">${tags}</div>
+                <p class="job-desc">${m.match_summary || "Profilinizle anlamsal uyum yuksek."}</p>
+              </article>
+            `;
+          })
+          .join("");
+        wrap.querySelectorAll("[data-go-project-id]").forEach((el) => {
+          el.addEventListener("click", () => {
+            const pid = el.getAttribute("data-go-project-id");
+            if (!pid) return;
+            window.location.href = `ilan-detay.html?id=${encodeURIComponent(pid)}`;
+          });
+        });
+      }
+
+      async function loadPersonalizedSuggestions() {
+        const metaEl = document.getElementById("personalizedMeta");
+        if (metaEl) metaEl.textContent = "Kisisel eslesmeler hesaplaniyor...";
+        try {
+          const resp = await fetch(`${authGetApiBase()}/me/match-suggestions/?top_k=6&max_tags=24`, {
+            method: "GET",
+            headers: authHeaders(),
+          });
+          const data = await authParseResponse(resp);
+          const matches = Array.isArray(data.matches) ? data.matches : [];
+          renderPersonalizedMatches(matches);
+          if (metaEl) {
+            metaEl.textContent = `${matches.length} ilan bulundu (kaynak: ${data.source || "hybrid"}). ${
+              data.dropped_low_match_count ? `${data.dropped_low_match_count} dusuk eslesme gizlendi.` : ""
+            }`;
+          }
+        } catch (error) {
+          renderPersonalizedMatches([]);
+          if (metaEl) metaEl.textContent = error.message || "Kisisel oneriler yuklenemedi.";
+        }
+      }
+
+      function initCardSpotlight() {
+        const cards = document.querySelectorAll(".job-card");
+        cards.forEach((card) => {
+          if (card.dataset.spotInit === "1") return;
+          card.dataset.spotInit = "1";
+
+          card.style.setProperty("--mouse-x", "50%");
+          card.style.setProperty("--mouse-y", "50%");
+          card.style.setProperty("--spot-opacity", "0");
+
+          card.addEventListener("mousemove", (event) => {
+            const rect = card.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            card.style.setProperty("--mouse-x", `${x}px`);
+            card.style.setProperty("--mouse-y", `${y}px`);
+            card.style.setProperty("--spot-opacity", "1");
+          });
+
+          card.addEventListener("mouseenter", () => {
+            card.style.setProperty("--spot-opacity", "1");
+          });
+
+          card.addEventListener("mouseleave", () => {
+            card.style.setProperty("--spot-opacity", "0");
+          });
+        });
+      }
+
+      function initProfileMenu() {
+        const menu = document.getElementById("profileMenu");
+        const toggle = document.getElementById("profileMenuToggle");
+        if (!menu || !toggle) return;
+
+        toggle.addEventListener("click", () => {
+          const isOpen = menu.classList.toggle("open");
+          toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!menu.contains(event.target)) {
+            menu.classList.remove("open");
+            toggle.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            menu.classList.remove("open");
+            toggle.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+
+      async function loadPosts() {
+        setFeedMeta("Ilanlar yukleniyor...");
+        try {
+          const resp = await fetch(`${authGetApiBase()}/project-posts/`, {
+            method: "GET",
+            headers: authHeadersForPublicRead(),
+          });
+          const data = await authParseResponse(resp);
+          const posts = Array.isArray(data) ? data : data.results || [];
+          renderPosts(posts);
+          setFeedMeta(`Toplam ${posts.length} ilan gosteriliyor.`);
+        } catch (err) {
+          renderPosts([]);
+          setFeedMeta(err.message || "Ilan akisi yuklenemedi.");
+        }
+      }
+
+      document.getElementById("btnLogoutMenu")?.addEventListener("click", () => {
+        authClearSession();
+        window.location.href = "login.html";
+      });
+      document.getElementById("btnRefreshPosts")?.addEventListener("click", loadPosts);
+      initGlobalBackgroundSpotlight();
+      initProfileMenu();
+      coforgeInitHeaderAvatar();
+      (function drainFlashToast() {
+        const flash = typeof coforgeConsumeFlashToast === "function" ? coforgeConsumeFlashToast() : null;
+        if (flash && flash.message && typeof coforgeShowToast === "function") {
+          coforgeShowToast(flash.message, !!flash.isError);
+        }
+      })();
+      loadPosts();
+      loadPersonalizedSuggestions();
+    </script>
+    <div style="font-family: sans-serif; z-index: 9999;">
+    
+    <button id="scrum-toggle-btn" onclick="toggleScrumChat()" style="position: fixed; bottom: 30px; left: 30px; width: 65px; height: 65px; border-radius: 50%; background: #6a0dad; color: white; border: none; font-size: 30px; box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4); cursor: pointer; transition: transform 0.2s; z-index: 10000;">
+        💬
+    </button>
+
+    <div id="scrum-chat-window" style="display: none; position: fixed; bottom: 100px; left: 30px; width: 400px; background: white; border: 2px solid #6a0dad; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; flex-direction: column; z-index: 9999;">
+        
+        <div id="scrum-chat-header" style="background: #6a0dad; color: white; padding: 15px; text-align: center; font-weight: bold; cursor: grab; position: relative; user-select: none;">
+            🤖 Forgey
+            <button onclick="toggleScrumChat()" style="position: absolute; right: 10px; top: 12px; background: none; border: none; color: white; cursor: pointer; font-size: 16px;">✖</button>
+        </div>
+        
+        <div id="chat-box" style="height: 350px; overflow-y: auto; overflow-x: hidden; padding: 15px; background: #f4f4f9;">
+            <div style="text-align: left;">
+                <p style="color: #6a0dad; background: #e6e6fa; margin: 5px 0; padding: 10px; border-radius: 10px; display: inline-block;"><strong>Forgey:</strong> Merhaba! Ben buradayım, görev dağılımı için bana yazabilirsin.</p>
+            </div>
+        </div>
+        
+        <div style="display: flex; padding: 10px; border-top: 1px solid #ddd; background: white;">
+            <input type="text" id="user-input" placeholder="Forgey'e bir komut ver..." style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; outline: none;">
+            <button onclick="sendMessage()" style="margin-left: 8px; padding: 10px 15px; background: #6a0dad; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Gönder</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chatWindow = document.getElementById("scrum-chat-window");
+    const chatHeader = document.getElementById("scrum-chat-header");
+    const toggleBtn = document.getElementById("scrum-toggle-btn");
+
+    function toggleScrumChat() {
+        if (chatWindow.style.display === "none") {
+            chatWindow.style.display = "flex";
+            toggleBtn.innerHTML = "✖";
+            toggleBtn.style.background = "#d32f2f"; 
+        } else {
+            chatWindow.style.display = "none";
+            toggleBtn.innerHTML = "💬";
+            toggleBtn.style.background = "#6a0dad"; 
+        }
+    }
+
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    chatHeader.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        chatHeader.style.cursor = 'grabbing';
+        const rect = chatWindow.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        chatWindow.style.bottom = 'auto';
+        chatWindow.style.right = 'auto';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let newX = e.clientX - offsetX;
+        let newY = e.clientY - offsetY;
+        chatWindow.style.left = `${newX}px`;
+        chatWindow.style.top = `${newY}px`;
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        chatHeader.style.cursor = 'grab';
+    });
+
+    async function sendMessage() {
+        const inputField = document.getElementById("user-input");
+        const chatBox = document.getElementById("chat-box");
+        const userText = inputField.value;
+
+        if (!userText) return; 
+
+        chatBox.innerHTML += `<div style="text-align: right;"><p style="color: white; background: #333; margin: 5px 0; padding: 10px; border-radius: 10px; display: inline-block; word-wrap: break-word; max-width: 90%;">${userText}</p></div>`;
+        inputField.value = ""; 
+        chatBox.innerHTML += `<div style="text-align: left;" id="loading"><p style="color: gray; font-size: 0.9em; margin: 5px 0;"><em>Düşünüyor...</em></p></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/scrum-master/chat/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "project_title": "Co-Forge Projesi",
+                    "project_description": "Ana sayfadan test ediliyor.",
+                    "team_members": [
+                        {"name": "Beyza", "skills": ["Python", "Django", "Backend"]},
+                        {"name": "Mustafa", "skills": ["Flutter", "Dart", "Frontend"]}
+                    ],
+                    "user_message": userText
+                })
+            });
+
+            const data = await response.json();
+            document.getElementById("loading").remove(); 
+
+            if (data.error) {
+                chatBox.innerHTML += `<div style="text-align: left;"><p style="color: white; background: #d32f2f; margin: 5px 0; padding: 10px; border-radius: 10px; display: inline-block; word-wrap: break-word; word-break: break-all; max-width: 95%;"><strong>Hata:</strong> ${data.error}</p></div>`;
+            } else {
+                chatBox.innerHTML += `<div style="text-align: left;"><p style="color: #6a0dad; background: #e6e6fa; margin: 5px 0; padding: 10px; border-radius: 10px; display: inline-block; word-wrap: break-word; max-width: 95%;"><strong>Forgey:</strong> ${data.ai_message}</p></div>`;
+                
+                if (data.assigned_tasks && data.assigned_tasks.length > 0) {
+                    let taskHtml = "<div style='font-size: 0.9em; background: #e0f7fa; padding: 10px; border-radius: 10px; margin: 5px 0; color: #006064; text-align: left; max-width: 95%;'><strong>Görevler:</strong><ul style='margin-top: 5px; padding-left: 20px;'>";
+                    data.assigned_tasks.forEach(task => {
+                        taskHtml += `<li><strong>${task.assignee}:</strong> ${task.task_name}</li>`;
+                    });
+                    taskHtml += "</ul></div>";
+                    chatBox.innerHTML += taskHtml;
+                }
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+        } catch (error) {
+            document.getElementById("loading").remove();
+            chatBox.innerHTML += `<div style="text-align: left;"><p style="color: white; background: #d32f2f; margin: 5px 0; padding: 10px; border-radius: 10px; display: inline-block; word-wrap: break-word; max-width: 95%;"><strong>Bağlantı Hatası:</strong> Backend'e ulaşılamadı.</p></div>`;
+        }
+    }
+</script>
+  </body>
+</html>

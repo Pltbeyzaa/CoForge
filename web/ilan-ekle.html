@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoForge — Ilan Olustur</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="dark-grid-bg">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="index.html"><h1 class="logo-text">CoForge</h1></a>
+        <nav class="topbar-actions">
+          <a class="btn btn-ghost" href="index.html">Ana Sayfa</a>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema degistir"></button>
+          <div class="profile-menu" id="profileMenu">
+            <button id="profileMenuToggle" class="profile-menu-toggle" type="button" aria-label="Hesap menusu" aria-haspopup="menu" aria-expanded="false"></button>
+            <div class="profile-dropdown" role="menu" aria-label="Hesap islemleri">
+              <a href="kullanici-profil.html" role="menuitem"><span class="menu-icon" aria-hidden="true">👤</span>Profil</a>
+              <a href="kullanici-profil.html#profile-ilanlar" role="menuitem"><span class="menu-icon" aria-hidden="true">📁</span>Ilanlarim</a>
+              <button id="btnLogoutMenu" class="danger" type="button" role="menuitem"><span class="menu-icon" aria-hidden="true">⏻</span>Cikis</button>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page post-builder-page">
+      <section class="container post-builder-shell">
+        <article class="post-builder-glass">
+          <header class="post-builder-head">
+            <h1>Yeni Ilan Olustur</h1>
+            <p>Projeni AI destekli eslestirme motoruna uygun sekilde tanimla ve en dogru ekiplerle bulus.</p>
+            <button id="btnGithubImportPost" class="github-import-btn" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.1.82-.26.82-.58v-2.2c-3.34.73-4.04-1.42-4.04-1.42-.55-1.4-1.34-1.77-1.34-1.77-1.1-.75.08-.73.08-.73 1.21.09 1.85 1.25 1.85 1.25 1.08 1.84 2.82 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.66-.3-5.47-1.32-5.47-5.9 0-1.3.47-2.36 1.24-3.2-.13-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.22A11.4 11.4 0 0 1 12 6.3c1.01 0 2.03.14 2.98.41 2.29-1.54 3.29-1.22 3.29-1.22.67 1.65.26 2.87.13 3.18.77.84 1.24 1.9 1.24 3.2 0 4.59-2.82 5.6-5.51 5.9.43.37.82 1.1.82 2.23v3.31c0 .32.22.69.83.58A12 12 0 0 0 12 .5Z"/></svg>
+              <span class="github-import-label">GitHub'dan Ice Aktar</span>
+              <span class="github-import-spinner" aria-hidden="true"></span>
+            </button>
+          </header>
+
+          <div class="post-form-grid">
+            <label>
+              <span class="post-label">Proje Basligi</span>
+              <input id="projectTitle" type="text" class="post-input" />
+            </label>
+            <label>
+              <span class="post-label">Proje Kategorisi</span>
+              <select id="projectCategory" class="post-select">
+                <option value="Web Uygulamasi">Web Uygulamasi</option>
+                <option value="Mobil Uygulama">Mobil Uygulama</option>
+                <option value="Yapay Zeka">Yapay Zeka</option>
+                <option value="E-Ticaret">E-Ticaret</option>
+                <option value="Diger">Diger</option>
+              </select>
+            </label>
+
+            <label>
+              <span class="post-label">Deneyim Seviyesi</span>
+              <select id="projectLevel" class="post-select">
+                <option value="junior">junior</option>
+                <option value="mid" selected>mid</option>
+                <option value="senior">senior</option>
+                <option value="lead">lead</option>
+              </select>
+            </label>
+            <label>
+              <span class="post-label">Calisma Modeli</span>
+              <select id="projectWorkMode" class="post-select">
+                <option value="remote">remote</option>
+                <option value="hybrid">hybrid</option>
+                <option value="onsite">onsite</option>
+              </select>
+            </label>
+
+            <label>
+              <span class="post-label">Tahmini Sure (hafta)</span>
+              <input id="projectDuration" class="post-input" type="number" min="1" value="8" />
+            </label>
+            <label>
+              <span class="post-label">Maksimum Takim Boyutu</span>
+              <input id="projectTeamSize" type="number" min="1" value="4" class="post-input" />
+            </label>
+
+            <label class="full-width">
+              <span class="post-label">Proje Aciklamasi</span>
+              <textarea id="projectDescription" rows="6" placeholder="Proje detaylarini buraya yaz..." class="post-textarea"></textarea>
+            </label>
+
+            <label class="full-width">
+              <span class="post-label">Beklenen Ciktilar</span>
+              <textarea id="projectOutputs" rows="4" placeholder="Ornek: Admin panel, API dokumani, test kapsam raporu..." class="post-textarea"></textarea>
+            </label>
+
+            <div class="full-width post-skill-head">
+              <label class="post-skill-select-wrap">
+                <span class="post-label">Gerekli Yetkinlikler</span>
+                <div class="post-skill-select-row">
+                  <select id="requiredSkillSelect" class="post-select">
+                    <option value="" disabled selected>Yetkinlik seçiniz</option>
+
+<optgroup label="Frontend (Önyüz)">
+    <option value="JavaScript">JavaScript</option>
+    <option value="TypeScript">TypeScript</option>
+    <option value="React">React</option>
+    <option value="Vue.js">Vue.js</option>
+    <option value="Angular">Angular</option>
+    <option value="Svelte">Svelte</option>
+    <option value="Next.js">Next.js</option>
+    <option value="Nuxt.js">Nuxt.js</option>
+    <option value="HTML5">HTML5</option>
+    <option value="CSS3">CSS3</option>
+    <option value="Tailwind CSS">Tailwind CSS</option>
+    <option value="Bootstrap">Bootstrap</option>
+    <option value="Redux">Redux</option>
+</optgroup>
+
+<optgroup label="Backend (Arkayüz)">
+    <option value="Python">Python</option>
+    <option value="Node.js">Node.js</option>
+    <option value="Java">Java</option>
+    <option value="C#">C#</option>
+    <option value="Go">Go</option>
+    <option value="Ruby">Ruby</option>
+    <option value="PHP">PHP</option>
+    <option value="Rust">Rust</option>
+    <option value="Django">Django</option>
+    <option value="Flask">Flask</option>
+    <option value="FastAPI">FastAPI</option>
+    <option value="Spring Boot">Spring Boot</option>
+    <option value="Express.js">Express.js</option>
+    <option value="Laravel">Laravel</option>
+    <option value="ASP.NET Core">ASP.NET Core</option>
+    <option value="REST API">REST API</option>
+    <option value="GraphQL">GraphQL</option>
+    <option value="Microservices">Microservices</option>
+</optgroup>
+
+<optgroup label="Mobile (Mobil)">
+    <option value="Flutter">Flutter</option>
+    <option value="React Native">React Native</option>
+    <option value="Swift">Swift</option>
+    <option value="Kotlin">Kotlin</option>
+    <option value="iOS">iOS</option>
+    <option value="Android">Android</option>
+    <option value="Dart">Dart</option>
+    <option value="Objective-C">Objective-C</option>
+</optgroup>
+
+<optgroup label="Database & Storage (Veritabanı)">
+    <option value="PostgreSQL">PostgreSQL</option>
+    <option value="MySQL">MySQL</option>
+    <option value="MongoDB">MongoDB</option>
+    <option value="Redis">Redis</option>
+    <option value="SQLite">SQLite</option>
+    <option value="Microsoft SQL Server">Microsoft SQL Server</option>
+    <option value="Elasticsearch">Elasticsearch</option>
+    <option value="Firebase">Firebase</option>
+    <option value="Supabase">Supabase</option>
+    <option value="Milvus">Milvus (Vector DB)</option>
+    <option value="Pinecone">Pinecone (Vector DB)</option>
+</optgroup>
+
+<optgroup label="DevOps & Cloud (Bulut & Sistem)">
+    <option value="Docker">Docker</option>
+    <option value="Kubernetes">Kubernetes</option>
+    <option value="AWS">AWS</option>
+    <option value="Google Cloud">Google Cloud (GCP)</option>
+    <option value="Microsoft Azure">Microsoft Azure</option>
+    <option value="CI/CD">CI/CD</option>
+    <option value="GitHub Actions">GitHub Actions</option>
+    <option value="Linux">Linux</option>
+    <option value="Terraform">Terraform</option>
+    <option value="Git">Git</option>
+    <option value="Nginx">Nginx</option>
+</optgroup>
+
+<optgroup label="AI & Data Science (Yapay Zeka & Veri)">
+    <option value="Machine Learning">Machine Learning</option>
+    <option value="Deep Learning">Deep Learning</option>
+    <option value="NLP">NLP</option>
+    <option value="Computer Vision">Computer Vision</option>
+    <option value="PyTorch">PyTorch</option>
+    <option value="TensorFlow">TensorFlow</option>
+    <option value="Pandas">Pandas</option>
+    <option value="NumPy">NumPy</option>
+    <option value="OpenAI API">OpenAI API</option>
+    <option value="Hugging Face">Hugging Face</option>
+    <option value="LangChain">LangChain</option>
+    <option value="Prompt Engineering">Prompt Engineering</option>
+</optgroup>
+
+<optgroup label="Game, Embedded & IoT (Oyun & Gömülü)">
+    <option value="C++">C++</option>
+    <option value="C">C</option>
+    <option value="Unity">Unity</option>
+    <option value="Unreal Engine">Unreal Engine</option>
+    <option value="Arduino">Arduino</option>
+    <option value="Raspberry Pi">Raspberry Pi</option>
+    <option value="IoT">IoT</option>
+    <option value="Gömülü Sistemler">Gömülü Sistemler</option>
+</optgroup>
+
+<optgroup label="Design & Management (Tasarım & Yönetim)">
+    <option value="UI/UX Design">UI/UX Design</option>
+    <option value="Figma">Figma</option>
+    <option value="Scrum">Scrum / Agile</option>
+    <option value="Jira">Jira</option>
+    <option value="Product Management">Product Management</option>
+</optgroup>
+                  </select>
+                  <button id="btnAddSkill" class="btn btn-ghost post-skill-add-btn" type="button">Ekle</button>
+                </div>
+              </label>
+              <button id="btnReloadSkills" class="btn btn-ghost post-reload-btn" type="button">Yetkinlik Listesini Yenile</button>
+            </div>
+
+            <div id="selectedSkills" class="full-width post-skill-badges"></div>
+
+            <label class="full-width">
+              <span class="post-label">Ilan Onizleme</span>
+              <textarea id="projectPreview" rows="10" readonly class="post-textarea post-terminal-preview"></textarea>
+            </label>
+
+            <div class="full-width post-actions">
+              <button id="btnPreview" class="btn btn-ghost" type="button">Onizleme Guncelle</button>
+              <button id="btnAnalyzeProject" class="btn btn-ghost post-nlp-btn" type="button">✨ NLP Analiz Et</button>
+              <button id="btnCreateProject" class="btn btn-primary post-save-btn" type="button">Ilani Kaydet</button>
+            </div>
+
+            <p id="projectMeta" class="full-width post-meta">Ilan formu hazir.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>CoForge Platform</p>
+      </div>
+    </footer>
+
+    <div id="githubConnectModalPost" class="github-connect-modal" aria-hidden="true">
+      <div class="github-connect-backdrop" data-close-modal-post="true"></div>
+      <div class="github-connect-panel">
+        <div class="github-connect-head">
+          <h3>GitHub Profilini Bagla</h3>
+          <p>Projelerini ve yetkinliklerini aninda iceri aktarmak icin GitHub erisimini dogrula.</p>
+        </div>
+        <div class="github-connect-actions">
+          <button id="btnGithubQuickConnectPost" class="btn btn-primary" type="button">GitHub Login (Hizli Baglanti)</button>
+        </div>
+        <div class="github-token-row">
+          <input id="githubTokenInputPost" class="input" type="password" placeholder="Personal Access Token (opsiyonel)" />
+          <button id="btnGithubTokenConnectPost" class="btn btn-ghost" type="button">Token ile Baglan</button>
+        </div>
+        <div class="github-load-track">
+          <div id="githubLoadFillPost" class="github-load-fill"></div>
+        </div>
+        <div id="githubDetectedSkillsPost" class="github-detected-skills"></div>
+        <div id="githubProjectSelectListPost" class="github-project-select-list"></div>
+        <div class="github-connect-footer">
+          <button id="btnGithubModalCancelPost" class="btn btn-ghost" type="button">Vazgec</button>
+          <button id="btnGithubImportConfirmPost" class="btn btn-primary" type="button" disabled>Secilenleri Forma Uygula</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+      requireAuth();
+      coforgeInitTheme();
+
+      function initGlobalBackgroundSpotlight() {
+        const root = document.body;
+        root.style.setProperty("--bg-mouse-x", "50vw");
+        root.style.setProperty("--bg-mouse-y", "35vh");
+        window.addEventListener("mousemove", (event) => {
+          root.style.setProperty("--bg-mouse-x", `${event.clientX}px`);
+          root.style.setProperty("--bg-mouse-y", `${event.clientY}px`);
+        });
+      }
+
+      function initProfileMenu() {
+        const menu = document.getElementById("profileMenu");
+        const toggle = document.getElementById("profileMenuToggle");
+        if (!menu || !toggle) return;
+        toggle.addEventListener("click", () => {
+          const isOpen = menu.classList.toggle("open");
+          toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+        document.addEventListener("click", (event) => {
+          if (!menu.contains(event.target)) {
+            menu.classList.remove("open");
+            toggle.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+
+      let latestProjectId = null;
+      const selectedSkillsState = [];
+      const SKILL_GROUPS = [
+        {
+          label: "Frontend (Önyüz)",
+          skills: [
+            "JavaScript",
+            "TypeScript",
+            "React",
+            "Vue.js",
+            "Angular",
+            "Svelte",
+            "Next.js",
+            "Nuxt.js",
+            "HTML5",
+            "CSS3",
+            "Tailwind CSS",
+            "Bootstrap",
+            "Redux",
+          ],
+        },
+        {
+          label: "Backend (Arkayüz)",
+          skills: [
+            "Python",
+            "Node.js",
+            "Java",
+            "C#",
+            "Go",
+            "Ruby",
+            "PHP",
+            "Rust",
+            "Django",
+            "Flask",
+            "FastAPI",
+            "Spring Boot",
+            "Express.js",
+            "Laravel",
+            "ASP.NET Core",
+            "REST API",
+            "GraphQL",
+            "Microservices",
+          ],
+        },
+        {
+          label: "Mobile (Mobil)",
+          skills: ["Flutter", "React Native", "Swift", "Kotlin", "iOS", "Android", "Dart", "Objective-C"],
+        },
+        {
+          label: "Database & Storage (Veritabanı)",
+          skills: [
+            "PostgreSQL",
+            "MySQL",
+            "MongoDB",
+            "Redis",
+            "SQLite",
+            "Microsoft SQL Server",
+            "Elasticsearch",
+            "Firebase",
+            "Supabase",
+            "Milvus",
+            "Pinecone",
+          ],
+        },
+        {
+          label: "DevOps & Cloud (Bulut & Sistem)",
+          skills: [
+            "Docker",
+            "Kubernetes",
+            "AWS",
+            "Google Cloud",
+            "Microsoft Azure",
+            "CI/CD",
+            "GitHub Actions",
+            "Linux",
+            "Terraform",
+            "Git",
+            "Nginx",
+          ],
+        },
+        {
+          label: "AI & Data Science (Yapay Zeka & Veri)",
+          skills: [
+            "Machine Learning",
+            "Deep Learning",
+            "NLP",
+            "Computer Vision",
+            "PyTorch",
+            "TensorFlow",
+            "Pandas",
+            "NumPy",
+            "OpenAI API",
+            "Hugging Face",
+            "LangChain",
+            "Prompt Engineering",
+          ],
+        },
+        {
+          label: "Game, Embedded & IoT (Oyun & Gömülü)",
+          skills: ["C++", "C", "Unity", "Unreal Engine", "Arduino", "Raspberry Pi", "IoT", "Gömülü Sistemler"],
+        },
+        {
+          label: "Design & Management (Tasarım & Yönetim)",
+          skills: ["UI/UX Design", "Figma", "Scrum", "Jira", "Product Management"],
+        },
+      ];
+
+      function getApiBase() {
+        return authGetApiBase();
+      }
+
+      function getHeaders(withJson = false) {
+        const headers = {};
+        const token = authGetToken();
+        if (withJson) headers["Content-Type"] = "application/json";
+        if (token) headers.Authorization = `Bearer ${token}`;
+        return headers;
+      }
+
+      function setMeta(text) {
+        document.getElementById("projectMeta").textContent = text;
+      }
+
+      function showSuccessToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "settings-toast";
+        toast.innerHTML = `
+          <span class="settings-toast-icon">✓</span>
+          <span class="settings-toast-text">${message}</span>
+        `;
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add("show"));
+        window.setTimeout(() => {
+          toast.classList.remove("show");
+          toast.classList.add("hide");
+          window.setTimeout(() => toast.remove(), 360);
+        }, 3000);
+      }
+
+      function showErrorToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "settings-toast error";
+        toast.innerHTML = `
+          <span class="settings-toast-icon">!</span>
+          <span class="settings-toast-text">${message}</span>
+        `;
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add("show"));
+        window.setTimeout(() => {
+          toast.classList.remove("show");
+          toast.classList.add("hide");
+          window.setTimeout(() => toast.remove(), 360);
+        }, 3000);
+      }
+
+      function normalizeLanguageSkill(language) {
+        const map = {
+          JavaScript: "JavaScript",
+          TypeScript: "TypeScript",
+          Python: "Python",
+          Dart: "Dart",
+          Java: "Java",
+          "C#": "C#",
+          Go: "Go",
+          Rust: "Rust",
+          PHP: "PHP",
+          Ruby: "Ruby",
+          HTML: "HTML5",
+          CSS: "CSS3",
+          SQL: "SQL",
+        };
+        return map[language] || language;
+      }
+
+      function getGithubKeywordSkills(repos) {
+        const skillMap = {
+          django: "Django",
+          flask: "Flask",
+          fastapi: "FastAPI",
+          react: "React",
+          "next.js": "Next.js",
+          nextjs: "Next.js",
+          vue: "Vue.js",
+          angular: "Angular",
+          flutter: "Flutter",
+          docker: "Docker",
+          kubernetes: "Kubernetes",
+          postgres: "PostgreSQL",
+          postgresql: "PostgreSQL",
+          mysql: "MySQL",
+          mongodb: "MongoDB",
+          redis: "Redis",
+          firebase: "Firebase",
+          graphql: "GraphQL",
+          rest: "REST API",
+          api: "REST API",
+          tensorflow: "TensorFlow",
+          pytorch: "PyTorch",
+          nlp: "NLP",
+          openai: "OpenAI API",
+          langchain: "LangChain",
+        };
+        const found = new Set();
+        repos.forEach((repo) => {
+          const text = `${repo?.name || ""} ${repo?.description || ""}`.toLowerCase();
+          Object.entries(skillMap).forEach(([keyword, skill]) => {
+            if (text.includes(keyword)) found.add(skill);
+          });
+        });
+        return found;
+      }
+
+      async function fetchGithubPortfolio(username, token = "") {
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const resp = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`, { headers });
+        if (!resp.ok) {
+          throw new Error(resp.status === 404 || resp.status === 403 ? "Profil Bulunamadi" : "GitHub verisi alinamadi");
+        }
+        const repos = await resp.json();
+        const repoList = Array.isArray(repos) ? repos.filter((repo) => !repo.fork) : [];
+        const ranked = repoList
+          .slice()
+          .sort((a, b) => {
+            const aScore = (a?.stargazers_count || 0) * 1000 + new Date(a?.pushed_at || 0).getTime();
+            const bScore = (b?.stargazers_count || 0) * 1000 + new Date(b?.pushed_at || 0).getTime();
+            return bScore - aScore;
+          })
+          .slice(0, 4);
+
+        const languageSet = new Set();
+        ranked.forEach((repo) => {
+          if (repo?.language) languageSet.add(normalizeLanguageSkill(repo.language));
+        });
+        const keywordSkills = getGithubKeywordSkills(ranked);
+        const skills = Array.from(new Set([...Array.from(languageSet), ...Array.from(keywordSkills)])).slice(0, 12);
+        const mappedProjects = ranked.map((repo) => ({
+          title: repo?.name || "Basliksiz Proje",
+          description: (repo?.description || "GitHub reposundan ice aktarildi.").trim(),
+          repo_url: repo?.html_url || "",
+          stars: repo?.stargazers_count || 0,
+          language: normalizeLanguageSkill(repo?.language || ""),
+        }));
+        return { topProjects: mappedProjects, skills };
+      }
+
+      function animateLoadBar(targetId, targetPercent = 92) {
+        const fill = document.getElementById(targetId);
+        if (!fill) return () => {};
+        let value = 0;
+        fill.style.width = "0%";
+        const timer = window.setInterval(() => {
+          value += Math.max(1, Math.floor((targetPercent - value) / 6));
+          if (value >= targetPercent) {
+            value = targetPercent;
+            window.clearInterval(timer);
+          }
+          fill.style.width = `${value}%`;
+        }, 90);
+        return () => {
+          window.clearInterval(timer);
+          fill.style.width = "100%";
+        };
+      }
+
+      let githubImportStatePost = { username: "", token: "", projects: [], skills: [] };
+
+      function renderDetectedSkillsPost(skills) {
+        const wrap = document.getElementById("githubDetectedSkillsPost");
+        if (!wrap) return;
+        wrap.innerHTML = skills
+          .map((skill, idx) => `<span class="github-detected-pill" style="animation-delay:${idx * 0.05}s">${skill}</span>`)
+          .join("");
+      }
+
+      function renderProjectSelectionPost(projects) {
+        const wrap = document.getElementById("githubProjectSelectListPost");
+        const confirm = document.getElementById("btnGithubImportConfirmPost");
+        if (!wrap || !confirm) return;
+        wrap.innerHTML = projects
+          .map((project, idx) => {
+            const title = (project?.title || "").trim() || "Basliksiz Proje";
+            return `
+              <article class="github-project-option">
+                <label>
+                  <input type="checkbox" class="github-project-checkbox-post" value="${idx}" checked />
+                  <span>
+                    <strong>${title}</strong>
+                    <span class="github-project-meta">★ ${project?.stars || 0}</span>
+                  </span>
+                </label>
+              </article>
+            `;
+          })
+          .join("");
+        confirm.disabled = !projects.length;
+      }
+
+      function openGithubModalPost() {
+        const modal = document.getElementById("githubConnectModalPost");
+        if (!modal) return;
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeGithubModalPost() {
+        const modal = document.getElementById("githubConnectModalPost");
+        if (!modal) return;
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+      }
+
+      async function beginGithubFetchPost(useToken = false) {
+        const username = window.prompt("GitHub kullanici adini girin:");
+        if (!username || !username.trim()) return;
+        const token = useToken ? String(document.getElementById("githubTokenInputPost")?.value || "").trim() : "";
+        const stopLoad = animateLoadBar("githubLoadFillPost");
+
+        try {
+          const { topProjects, skills } = await fetchGithubPortfolio(username.trim(), token);
+          githubImportStatePost = { username: username.trim(), token, projects: topProjects, skills };
+          renderDetectedSkillsPost(skills);
+          renderProjectSelectionPost(topProjects);
+          stopLoad();
+        } catch (_err) {
+          showErrorToast("Profil Bulunamadi");
+        }
+      }
+
+      function finalizeGithubImportPost() {
+        const checks = Array.from(document.querySelectorAll(".github-project-checkbox-post:checked"));
+        const selectedIndexes = checks.map((el) => Number(el.value)).filter((n) => Number.isFinite(n));
+        const selectedProjects = selectedIndexes.map((idx) => githubImportStatePost.projects[idx]).filter(Boolean);
+        const featured = selectedProjects[0];
+        if (featured) {
+          document.getElementById("projectTitle").value = featured.title || "";
+          document.getElementById("projectDescription").value = [featured.description || "", `GitHub Repo: ${featured.repo_url || "-"}`].join("\n").trim();
+        }
+
+        if (githubImportStatePost.skills.length) {
+          const existing = new Set(selectedSkillsState.map((item) => String(item.name || "").toLowerCase()));
+          githubImportStatePost.skills.forEach((skill) => {
+            if (!existing.has(skill.toLowerCase())) {
+              selectedSkillsState.push({ id: null, name: skill });
+            }
+          });
+          renderSelectedSkills();
+        }
+
+        const currentUser = authGetCurrentUser() || {};
+        authSetCurrentUser({
+          ...currentUser,
+          github_username: githubImportStatePost.username || currentUser.github_username || "",
+          github_verified: true,
+        });
+        updatePreview();
+        closeGithubModalPost();
+        showSuccessToast("Secilen GitHub projeleri forma uygulandi.");
+      }
+
+      function parseSkills() {
+        return selectedSkillsState.map((s) => ({ id: s.id, name: s.name }));
+      }
+
+      function buildDescription() {
+        const base = document.getElementById("projectDescription").value.trim();
+        const category = document.getElementById("projectCategory").value;
+        const level = document.getElementById("projectLevel").value;
+        const workMode = document.getElementById("projectWorkMode").value;
+        const duration = document.getElementById("projectDuration").value;
+        const outputs = document.getElementById("projectOutputs").value.trim();
+        const skills = parseSkills().map((s) => s.name).filter(Boolean);
+        const lines = [base, "", "=== ILAN DETAYLARI ===", `Kategori: ${category}`, `Deneyim Seviyesi: ${level}`, `Calisma Modeli: ${workMode}`, `Tahmini Sure (hafta): ${duration || "-"}`, `Gerekli Yetkinlikler: ${skills.join(", ") || "-"}`, "Beklenen Ciktilar:", outputs || "-"];
+        return lines.join("\n").trim();
+      }
+
+      function updatePreview() {
+        const title = document.getElementById("projectTitle").value.trim();
+        const description = buildDescription();
+        const teamSize = document.getElementById("projectTeamSize").value;
+        document.getElementById("projectPreview").value = [`Baslik: ${title || "-"}`, `Max Takim: ${teamSize || "-"}`, "", description].join("\n");
+      }
+
+      function renderSelectedSkills() {
+        const wrap = document.getElementById("selectedSkills");
+        wrap.innerHTML = "";
+        selectedSkillsState.forEach((skill) => {
+          const tag = document.createElement("button");
+          tag.type = "button";
+          tag.className = "post-skill-badge";
+          tag.innerHTML = `<span>${skill.name}</span><span class="post-skill-remove">×</span>`;
+          tag.addEventListener("click", () => {
+            const idx = selectedSkillsState.findIndex((x) => x.id === skill.id);
+            if (idx >= 0) selectedSkillsState.splice(idx, 1);
+            renderSelectedSkills();
+            updatePreview();
+          });
+          wrap.appendChild(tag);
+        });
+      }
+
+      async function loadSkillsOptions() {
+        async function fetchSkills() {
+          const listResp = await fetch(`${getApiBase()}/skills/`, {
+            method: "GET",
+            headers: getHeaders(),
+          });
+          return authParseResponse(listResp);
+        }
+
+        let skillList = await fetchSkills();
+        if (!Array.isArray(skillList) || skillList.length === 0) {
+          const defaults = SKILL_GROUPS.flatMap((group) => group.skills);
+          for (const name of defaults) {
+            try {
+              const createResp = await fetch(`${getApiBase()}/skills/`, {
+                method: "POST",
+                headers: getHeaders(true),
+                body: JSON.stringify({ name }),
+              });
+              await authParseResponse(createResp);
+            } catch (_err) {}
+          }
+          skillList = await fetchSkills();
+        }
+
+        const select = document.getElementById("requiredSkillSelect");
+        const idByName = new Map(
+          (skillList || [])
+            .filter((s) => s && s.name)
+            .map((s) => [String(s.name).trim().toLowerCase(), s.id])
+        );
+
+        // HTML'deki optgroup/option yapisini koru, sadece option value'larini backend skill id ile esle.
+        select.querySelectorAll("option").forEach((opt) => {
+          const label = (opt.textContent || "").trim();
+          const currentValue = (opt.value || "").trim();
+          if (!label || !currentValue) return;
+          const mappedId = idByName.get(label.toLowerCase()) || idByName.get(currentValue.toLowerCase());
+          if (mappedId) {
+            opt.value = String(mappedId);
+            opt.dataset.skillName = label;
+          }
+        });
+      }
+
+      async function ensureSkillIds(selectedSkills) {
+        if (!selectedSkills.length) return [];
+
+        const listResp = await fetch(`${getApiBase()}/skills/`, {
+          method: "GET",
+          headers: getHeaders(),
+        });
+        const skillList = await authParseResponse(listResp);
+        const idByName = new Map(
+          (skillList || [])
+            .filter((s) => s && s.name)
+            .map((s) => [String(s.name).trim().toLowerCase(), s.id])
+        );
+
+        const resolved = [];
+        for (const skill of selectedSkills) {
+          const numericId = Number(skill.id);
+          if (Number.isFinite(numericId) && numericId > 0) {
+            resolved.push(numericId);
+            continue;
+          }
+
+          const skillName = String(skill.name || "").trim();
+          if (!skillName) continue;
+          let foundId = idByName.get(skillName.toLowerCase());
+
+          if (!foundId) {
+            const createResp = await fetch(`${getApiBase()}/skills/`, {
+              method: "POST",
+              headers: getHeaders(true),
+              body: JSON.stringify({ name: skillName }),
+            });
+            const created = await authParseResponse(createResp);
+            foundId = created.id;
+            idByName.set(skillName.toLowerCase(), foundId);
+          }
+
+          if (foundId) resolved.push(foundId);
+        }
+
+        return Array.from(new Set(resolved));
+      }
+
+      function finishSaveSuccess(saveButton, redirectId, metaText, toastMsg) {
+        setMeta(metaText);
+        saveButton.textContent = "Kaydedildi! ✓";
+        saveButton.classList.add("is-success");
+        showSuccessToast(toastMsg);
+        window.setTimeout(() => {
+          const targetUrl = redirectId ? `ilan-detay.html?id=${encodeURIComponent(String(redirectId))}` : "ilan-detay.html";
+          window.location.href = targetUrl;
+        }, 1500);
+      }
+
+      async function createProjectOffline(saveButton, title, description, teamSize, selectedSkills) {
+        const localId = `local_${Date.now()}`;
+        const currentUser = authGetCurrentUser() || {};
+        const postPayload = {
+          id: localId,
+          title,
+          description,
+          max_team_size: teamSize,
+          status: "open",
+          owner_email: currentUser.email || "",
+          owner_role: currentUser.title || "Proje Sahibi",
+          required_skills_detail: selectedSkills.map((s) => ({ skill_name: s.name })),
+          created_at: new Date().toISOString(),
+        };
+        coforgeSaveLocalProjectPost(postPayload);
+        persistProjectForCurrentUser({
+          source: "coforge_ilan",
+          id: localId,
+          title,
+          description,
+          skills: selectedSkills,
+          created_at: new Date().toISOString(),
+        });
+        latestProjectId = localId;
+        finishSaveSuccess(
+          saveButton,
+          localId,
+          `Ilan kaydedildi (yerel). ID: ${localId}`,
+          "Ilaniniz kaydedildi (mock oturum: sunucuya gonderilmedi)."
+        );
+      }
+
+      async function createProject() {
+        const saveButton = document.getElementById("btnCreateProject");
+        const title = document.getElementById("projectTitle").value.trim();
+        const description = buildDescription();
+        const teamSize = parseInt(document.getElementById("projectTeamSize").value, 10) || null;
+        const selectedSkills = parseSkills();
+
+        if (!title || !description) {
+          setMeta("Baslik ve aciklama zorunludur.");
+          return;
+        }
+        if (selectedSkills.length === 0) {
+          setMeta("En az 1 gerekli yetkinlik gir.");
+          return;
+        }
+
+        setMeta("Ilan kaydediliyor...");
+        saveButton.disabled = true;
+        saveButton.textContent = "Kaydediliyor...";
+        try {
+          if (authIsMockSession()) {
+            await createProjectOffline(saveButton, title, description, teamSize, selectedSkills);
+            return;
+          }
+
+          const skillIds = await ensureSkillIds(selectedSkills);
+          const requiredSkills = skillIds.map((id) => ({ skill_id: id, priority: 1 }));
+
+          const resp = await fetch(`${getApiBase()}/project-posts/`, {
+            method: "POST",
+            headers: getHeaders(true),
+            body: JSON.stringify({
+              title,
+              description,
+              status: "open",
+              max_team_size: teamSize,
+              required_skills: requiredSkills,
+            }),
+          });
+          const data = await authParseResponse(resp);
+          persistProjectForCurrentUser({
+            source: "coforge_ilan",
+            id: data?.id || null,
+            title,
+            description,
+            skills: selectedSkills,
+            created_at: new Date().toISOString(),
+          });
+          latestProjectId = data.id;
+          finishSaveSuccess(saveButton, data?.id, `Ilan olusturuldu. ID: #${data.id}`, "Ilaniniz basariyla olusturuldu.");
+        } catch (err) {
+          setMeta(err.message || "Ilan kaydedilemedi.");
+          saveButton.disabled = false;
+          saveButton.textContent = "Ilani Kaydet";
+          saveButton.classList.remove("is-success");
+        }
+      }
+
+      function getUserProjectsStorageKey(email) {
+        return `coforge_projects_${String(email || "").toLowerCase()}`;
+      }
+
+      function persistProjectForCurrentUser(project) {
+        const currentUser = authGetCurrentUser();
+        const email = (currentUser?.email || "").trim().toLowerCase();
+        if (!email) return;
+
+        const key = getUserProjectsStorageKey(email);
+        let list = [];
+        try {
+          const raw = (localStorage.getItem(key) || "").trim();
+          const parsed = raw ? JSON.parse(raw) : [];
+          list = Array.isArray(parsed) ? parsed : [];
+        } catch (_err) {
+          list = [];
+        }
+
+        list.unshift(project);
+        localStorage.setItem(key, JSON.stringify(list.slice(0, 30)));
+      }
+
+      async function analyzeProject() {
+        if (!latestProjectId) {
+          setMeta("Once ilani kaydet.");
+          return;
+        }
+        setMeta("NLP analizi calisiyor...");
+        try {
+          const resp = await fetch(`${getApiBase()}/project-posts/${latestProjectId}/analyze/`, {
+            method: "POST",
+            headers: getHeaders(true),
+            body: JSON.stringify({ max_tags: 10 }),
+          });
+          const data = await authParseResponse(resp);
+          const tags = (data.tags || []).join(", ");
+          setMeta(`Analiz tamamlandi. Tag: ${tags || "-"}`);
+        } catch (err) {
+          setMeta(err.message || "Analiz basarisiz.");
+        }
+      }
+
+      document.getElementById("btnCreateProject").addEventListener("click", createProject);
+      document.getElementById("btnAnalyzeProject").addEventListener("click", analyzeProject);
+      document.getElementById("btnPreview").addEventListener("click", updatePreview);
+      document.getElementById("projectTitle").addEventListener("input", updatePreview);
+      document.getElementById("projectDescription").addEventListener("input", updatePreview);
+      document.getElementById("projectOutputs").addEventListener("input", updatePreview);
+      document.getElementById("projectCategory").addEventListener("change", updatePreview);
+      document.getElementById("projectLevel").addEventListener("change", updatePreview);
+      document.getElementById("projectWorkMode").addEventListener("change", updatePreview);
+      document.getElementById("projectDuration").addEventListener("input", updatePreview);
+      document.getElementById("projectTeamSize").addEventListener("input", updatePreview);
+      document.getElementById("btnAddSkill").addEventListener("click", () => {
+        const select = document.getElementById("requiredSkillSelect");
+        const selectedOption = select.options[select.selectedIndex];
+        const rawValue = String(select.value || "").trim();
+        const id = Number(rawValue);
+        const name = (selectedOption?.dataset.skillName || selectedOption?.textContent || "").trim();
+        if (!rawValue || !name) return;
+        if (selectedSkillsState.some((x) => x.name.toLowerCase() === name.toLowerCase())) return;
+        selectedSkillsState.push({ id: Number.isFinite(id) && id > 0 ? id : null, name });
+        renderSelectedSkills();
+        updatePreview();
+      });
+      document.getElementById("btnReloadSkills").addEventListener("click", async () => {
+        try {
+          await loadSkillsOptions();
+          setMeta("Yetkinlik listesi guncellendi.");
+          updatePreview();
+        } catch (err) {
+          setMeta(err.message || "Yetkinlikler yuklenemedi.");
+        }
+      });
+      document.getElementById("btnLogoutMenu").addEventListener("click", () => {
+        authClearSession();
+        window.location.href = "login.html";
+      });
+      document.getElementById("btnGithubImportPost").addEventListener("click", openGithubModalPost);
+      document.getElementById("btnGithubQuickConnectPost").addEventListener("click", () => beginGithubFetchPost(false));
+      document.getElementById("btnGithubTokenConnectPost").addEventListener("click", () => beginGithubFetchPost(true));
+      document.getElementById("btnGithubImportConfirmPost").addEventListener("click", finalizeGithubImportPost);
+      document.getElementById("btnGithubModalCancelPost").addEventListener("click", closeGithubModalPost);
+      document.querySelector("#githubConnectModalPost [data-close-modal-post='true']")?.addEventListener("click", closeGithubModalPost);
+
+      initGlobalBackgroundSpotlight();
+      initProfileMenu();
+      coforgeInitHeaderAvatar();
+
+      (async () => {
+        try {
+          await loadSkillsOptions();
+        } catch (_err) {
+          setMeta("Yetkinlik listesi yuklenemedi.");
+        }
+        updatePreview();
+      })();
+    </script>
+  </body>
+</html>

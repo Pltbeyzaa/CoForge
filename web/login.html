@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoForge — Giriş</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="dark-grid-bg auth-theme-page">
+    <header class="auth-topbar">
+      <div class="container auth-topbar-inner">
+        <a class="brand" href="login.html"><h1 class="logo-text">CoForge</h1></a>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema degistir"></button>
+      </div>
+    </header>
+
+    <main class="auth-main">
+      <section id="loginShell" class="auth-shell">
+        <article class="auth-card">
+          <div class="auth-card-head">
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Hesabina giris yap ve AI destekli proje eslesmelerine devam et.</p>
+          </div>
+
+          <div class="auth-form-grid">
+            <label>
+              <span class="field-label">E-posta</span>
+              <input id="email" class="input" type="email" placeholder="ornek@coforge.dev" />
+            </label>
+
+            <label>
+              <span class="field-label">Sifre</span>
+              <input id="password" class="input" type="password" placeholder="••••••••" />
+            </label>
+
+            <div class="auth-row-between">
+              <span></span>
+              <a class="auth-muted-link" href="#">Sifremi Unuttum</a>
+            </div>
+
+            <button id="btnLogin" class="btn btn-auth-submit" type="button">Giris Yap</button>
+            <p id="loginMeta" class="auth-meta">Devam etmek icin giris yap.</p>
+            <p class="auth-link">Hesabin yok mu? <a href="register.html">Kayit ol</a></p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <section id="loginSplash" class="login-splash" aria-hidden="true">
+      <div class="login-splash-inner">
+        <h2 id="loginSplashTitle" class="login-splash-title">Co<span>Forge</span></h2>
+        <p class="login-splash-tagline">Fikirleri koda, kodlari gelecege donusturecek dogru ekibi kur.</p>
+      </div>
+    </section>
+
+    <script src="auth.js"></script>
+    <script>
+      coforgeInitTheme();
+
+      function initGlobalBackgroundSpotlight() {
+        const root = document.body;
+        root.style.setProperty("--bg-mouse-x", "50vw");
+        root.style.setProperty("--bg-mouse-y", "35vh");
+        window.addEventListener("mousemove", (event) => {
+          root.style.setProperty("--bg-mouse-x", `${event.clientX}px`);
+          root.style.setProperty("--bg-mouse-y", `${event.clientY}px`);
+        });
+      }
+
+      initGlobalBackgroundSpotlight();
+
+      if (!redirectIfAuthenticated()) {
+        const meta = document.getElementById("loginMeta");
+        const loginShell = document.getElementById("loginShell");
+        const loginSplash = document.getElementById("loginSplash");
+        const loginSplashTitle = document.getElementById("loginSplashTitle");
+
+        function playLoginSplashAndRedirect(targetUrl) {
+          // Sinematik geçiş index.html tarafında yapılıyor.
+          // Burada sadece login formunu fade-out edip flag bırakıyoruz.
+          loginShell?.classList.add("fade-out");
+          sessionStorage.setItem("coforge_post_login", "1");
+          window.setTimeout(() => {
+            window.location.href = targetUrl;
+          }, 320);
+        }
+
+        document.getElementById("btnLogin").addEventListener("click", async () => {
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
+
+          if (!email || !password) {
+            meta.textContent = "E-posta ve şifre zorunludur.";
+            return;
+          }
+          meta.textContent = "Giriş yapılıyor...";
+
+          try {
+            await authLogin(email, password);
+            playLoginSplashAndRedirect("index.html");
+          } catch (err) {
+            meta.textContent = err.message || "Giriş başarısız.";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

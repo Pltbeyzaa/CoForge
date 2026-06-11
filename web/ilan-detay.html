@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoForge — Ilan Detayi</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="dark-grid-bg">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="index.html"><h1 class="logo-text">CoForge</h1></a>
+        <nav class="topbar-actions">
+          <a class="btn btn-ghost" href="index.html">Ana Sayfa</a>
+          <a class="btn btn-primary" href="ilan-ekle.html">Ilan Olustur</a>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema degistir"></button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="detail-page">
+      <section class="container detail-shell">
+        <article class="detail-glass" id="detailCard">
+          <div class="detail-top">
+            <a class="btn btn-ghost detail-back-btn" href="index.html">
+              <span aria-hidden="true">←</span>
+              Ana Sayfaya Don
+            </a>
+            <span class="status-badge"><span class="pulse-dot"></span>OPEN</span>
+          </div>
+
+          <h1 id="detailTitle" class="detail-title">Ilan yukleniyor...</h1>
+
+          <a id="detailOwnerCard" class="detail-owner-card" href="kullanici-profil.html">
+            <div id="detailAvatarMount" class="coforge-detail-avatar-mount"></div>
+            <div class="detail-owner-content">
+              <div id="detailOwner" class="author-name">Takim</div>
+              <div id="detailOwnerRole" class="detail-owner-role">Proje Sahibi</div>
+              <div class="detail-owner-meta">
+                <span class="author-role">Ilan Sahibi</span>
+                <span id="detailTrustScore" class="detail-trust-chip">⭐ 4.8/5.0 Guvenilirlik</span>
+              </div>
+            </div>
+            <span class="detail-owner-cta">Profili Incele</span>
+          </a>
+
+          <div class="detail-section-label">Yetkinlikler</div>
+          <div id="detailTags" class="detail-tags"></div>
+
+          <div class="detail-section-label">Ihtiyac Ozeti</div>
+          <div id="detailMeta" class="detail-meta-row"></div>
+
+          <div class="detail-section-label">Proje Aciklamasi</div>
+          <p id="detailDescription" class="detail-body"></p>
+
+          <div id="ownerPostActions" class="detail-owner-actions" hidden>
+            <a id="btnEditPost" class="btn btn-ghost" href="#">Ilani Duzenle</a>
+            <button id="btnDeletePost" class="btn btn-ghost btn-ilan-delete" type="button">Ilani Sil</button>
+          </div>
+
+          <button id="btnMatchRequest" class="btn detail-cta" type="button">Eslesme Istegi Gonder</button>
+        </article>
+
+        <article id="recruitmentBox" class="detail-glass recruitment-candidates-panel" style="margin-top: 18px" hidden>
+          <div class="detail-section-label recruitment-candidates-title">Bu Proje Icin En Uygun Adaylar</div>
+          <p id="recruitmentMeta" class="author-role">Aday onerileri yukleniyor...</p>
+          <div id="recruitmentList" class="feed-grid recruitment-candidates-grid"></div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>CoForge Platform</p>
+      </div>
+    </footer>
+
+    <div id="deleteIlanModal" class="github-connect-modal" aria-hidden="true">
+      <div class="github-connect-backdrop" data-close-delete-modal="true"></div>
+      <div class="github-connect-panel">
+        <div class="github-connect-head">
+          <h3>Ilani sil</h3>
+          <p>Bu ilani silmek istediginize emin misiniz? Bu islem geri alinamaz.</p>
+        </div>
+        <div class="github-connect-footer">
+          <button id="btnCancelDeleteIlan" class="btn btn-ghost" type="button">Vazgec</button>
+          <button id="btnConfirmDeleteIlan" class="btn btn-primary" type="button">Evet, sil</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+      requireAuth();
+      coforgeInitTheme();
+
+      function initGlobalBackgroundSpotlight() {
+        const root = document.body;
+        root.style.setProperty("--bg-mouse-x", "50vw");
+        root.style.setProperty("--bg-mouse-y", "35vh");
+        window.addEventListener("mousemove", (event) => {
+          root.style.setProperty("--bg-mouse-x", `${event.clientX}px`);
+          root.style.setProperty("--bg-mouse-y", `${event.clientY}px`);
+        });
+      }
+
+      function getQueryId() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("id");
+      }
+
+      let currentDetailPost = null;
+      const LOCAL_POST_PREFIX = "coforge_local_post_";
+
+      function emailsMatch(a, b) {
+        return String(a || "").trim().toLowerCase() === String(b || "").trim().toLowerCase();
+      }
+
+      function updateOwnerToolbar(post) {
+        const bar = document.getElementById("ownerPostActions");
+        const editBtn = document.getElementById("btnEditPost");
+        const delBtn = document.getElementById("btnDeletePost");
+        const matchBtn = document.getElementById("btnMatchRequest");
+        if (!bar || !editBtn || !delBtn) return;
+        const me = authGetCurrentUser() || {};
+        const owner = post?.owner_email || "";
+        const isOwner = post && emailsMatch(me.email, owner);
+        if (!isOwner) {
+          bar.hidden = true;
+          if (matchBtn) matchBtn.hidden = false;
+          return;
+        }
+        bar.hidden = false;
+        const pid = post.id ?? post.pk;
+        editBtn.href = `ilan-duzenle.html?id=${encodeURIComponent(String(pid))}`;
+        // Ilan sahibi kendi ilanina esleme istegi gonderemez
+        if (matchBtn) matchBtn.hidden = true;
+      }
+
+      function removeLocalIlanFromStorage(id) {
+        localStorage.removeItem(`${LOCAL_POST_PREFIX}${id}`);
+        const user = authGetCurrentUser() || {};
+        const email = String(user.email || "").trim().toLowerCase();
+        if (!email) return;
+        const key = `coforge_projects_${email}`;
+        let list = [];
+        try {
+          const raw = (localStorage.getItem(key) || "").trim();
+          list = raw ? JSON.parse(raw) : [];
+          if (!Array.isArray(list)) list = [];
+        } catch (_e) {
+          list = [];
+        }
+        const next = list.filter((p) => String(p?.id) !== String(id));
+        localStorage.setItem(key, JSON.stringify(next));
+      }
+
+      function openDeleteIlanModal() {
+        const modal = document.getElementById("deleteIlanModal");
+        if (!modal) return;
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeDeleteIlanModal() {
+        const modal = document.getElementById("deleteIlanModal");
+        if (!modal) return;
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+      }
+
+      async function confirmDeleteIlan() {
+        const post = currentDetailPost;
+        if (!post) return;
+        const id = post.id ?? post.pk;
+        closeDeleteIlanModal();
+        try {
+          if (String(id).startsWith("local_")) {
+            removeLocalIlanFromStorage(id);
+            coforgeFlashToast("Ilan silindi");
+            window.location.href = "index.html";
+            return;
+          }
+          if (typeof authIsMockSession === "function" && authIsMockSession()) {
+            if (typeof coforgeShowToast === "function") {
+              coforgeShowToast("Mock oturumda sunucudan ilan silinemez.", true);
+            }
+            return;
+          }
+          const resp = await fetch(`${authGetApiBase()}/projects/${id}/`, {
+            method: "DELETE",
+            headers: authHeaders(),
+          });
+          if (resp.status === 204 || resp.ok) {
+            coforgeFlashToast("Ilan silindi");
+            window.location.href = "index.html";
+            return;
+          }
+          await authParseResponse(resp);
+        } catch (error) {
+          if (typeof coforgeShowToast === "function") coforgeShowToast(error.message || "Ilan silinemedi.", true);
+        }
+      }
+
+      function fillDetail(post) {
+        const title = post.title || "Baslik belirtilmedi";
+        const owner = (post.owner_email || "Takim").trim();
+        const skills = (post.required_skills_detail || []).map((item) => item.skill_name).filter(Boolean);
+        const description = post.description || "Bu ilan icin detayli aciklama henuz girilmedi.";
+        const team = post.max_team_size || "-";
+        const needed = skills[0] || "Belirtilmedi";
+        const ownerRole = post.owner_role || "Proje Sahibi";
+        const trustScore = post.owner_reliability_score || "4.8/5.0";
+
+        document.getElementById("detailTitle").textContent = title;
+        document.getElementById("detailOwner").textContent = owner;
+        document.getElementById("detailOwnerRole").textContent = ownerRole;
+        document.getElementById("detailTrustScore").textContent = `⭐ ${trustScore} Guvenilirlik`;
+        const avUrl = String(post.owner_avatar_url || post.owner_avatar || "").trim();
+        const avMount = document.getElementById("detailAvatarMount");
+        if (avMount && typeof coforgeRenderAvatarTo === "function") {
+          coforgeRenderAvatarTo(avMount, avUrl, "detail");
+        }
+        document.getElementById("detailDescription").textContent = description;
+
+        const tagsEl = document.getElementById("detailTags");
+        tagsEl.innerHTML = skills.length
+          ? skills.map((skill) => `<span class="tag">${skill}</span>`).join("")
+          : '<span class="tag">Belirtilmedi</span>';
+
+        document.getElementById("detailMeta").innerHTML = `
+          <span class="chip">Mevcut Takim: ${Math.max(0, Number(team) - 1)}/${team}</span>
+          <span class="chip">Aranan Yetkinlik: ${needed}</span>
+          <span class="chip">Durum: ${post.status || "OPEN"}</span>
+        `;
+
+        currentDetailPost = post;
+        updateOwnerToolbar(post);
+
+        // Esleme butonunu sifirla (sayfa yenilemesiz ilan degisimlerine karsi)
+        const matchBtn = document.getElementById("btnMatchRequest");
+        if (matchBtn) {
+          matchBtn.disabled = false;
+          matchBtn.textContent = "Eslesme Istegi Gonder";
+          matchBtn.style.cssText = "";
+        }
+      }
+
+      function renderCandidateSuggestions(matches) {
+        const wrap = document.getElementById("recruitmentList");
+        if (!wrap) return;
+        const rows = Array.isArray(matches) ? matches : [];
+        const post = currentDetailPost || {};
+        const projectTitle = String(post.title || "CoForge projesi").trim();
+        if (!rows.length) {
+          wrap.innerHTML = `
+            <article class="showcase-card recruitment-empty-card">
+              <h4>Su an listelenecek aday yok</h4>
+              <p>Diger gelistiricilerin profillerinde ilaninizla ortusan yetkinlikler veya esik nedeniyle liste bos kalabilir. Adaylarin biyografi ve yeteneklerini guncellemelerini isteyebilir veya yonetimden Milvus yeniden indeksleme calistirabilirsiniz.</p>
+            </article>
+          `;
+          return;
+        }
+        wrap.innerHTML = rows
+          .map((row) => {
+            const score = Math.max(0, Math.min(100, Number(row.similarity_percent || 0)));
+            const skills = Array.isArray(row.skills) ? row.skills : [];
+            const tags = skills.length ? skills.slice(0, 5).map((s) => `<span class="tag">${s}</span>`).join("") : '<span class="tag">Belirtilmedi</span>';
+            const common = Array.isArray(row.common_skills) ? row.common_skills.join(", ") : "";
+            const email = String(row.email || "").trim();
+            const inviteSubject = encodeURIComponent(`CoForge: ${projectTitle}`);
+            const inviteBody = encodeURIComponent(
+              `Merhaba ${String(row.full_name || "").trim() || ""},\n\n"${projectTitle}" projesi icin sizi takima davet etmek istiyorum.\n\n`
+            );
+            const mailHref = email
+              ? `mailto:${encodeURIComponent(email)}?subject=${inviteSubject}&body=${inviteBody}`
+              : "#";
+            const candAv =
+              typeof coforgeAvatarOuterHTML === "function"
+                ? coforgeAvatarOuterHTML(row.avatar_url || row.avatar || "", "card")
+                : `<div class="avatar">${String(row.full_name || "A")[0].toUpperCase()}</div>`;
+            return `
+              <article class="job-card project-card recruitment-candidate-card">
+                <div class="job-card-head">
+                  <div class="author">
+                    ${candAv}
+                    <div>
+                      <div class="author-name">${row.full_name || row.email || "Aday"}</div>
+                      <div class="author-role">${row.title || "Developer"}</div>
+                    </div>
+                  </div>
+                  <span class="status-badge recruitment-score-pill">Eslesme %${Math.round(score)}</span>
+                </div>
+                <p class="job-desc">${row.bio || "Profil biyografisi bulunmuyor."}</p>
+                <div class="tags">${tags}</div>
+                <p class="author-role">${common ? `Ortak yetkinlikler: ${common}` : "Ortak yetkinlik tespit edilmedi."}</p>
+                <div class="recruitment-candidate-actions">
+                  <a class="btn btn-primary recruitment-invite-btn" href="${mailHref}" ${email ? 'target="_blank" rel="noopener noreferrer"' : "aria-disabled=\"true\" tabindex=\"-1\""}>Davet Et</a>
+                </div>
+              </article>
+            `;
+          })
+          .join("");
+      }
+
+      async function loadRecruitmentSuggestions(post) {
+        const box = document.getElementById("recruitmentBox");
+        const meta = document.getElementById("recruitmentMeta");
+        const currentUser = authGetCurrentUser() || {};
+        if (!box || !meta) return;
+        const ownerEmail = String(post?.owner_email || "").trim().toLowerCase();
+        const me = String(currentUser.email || "").trim().toLowerCase();
+        if (!ownerEmail || !me || ownerEmail !== me) {
+          box.hidden = true;
+          return;
+        }
+        box.hidden = false;
+        meta.textContent = "Ilan metni ve gereken yetkinliklerden vektor olusturuluyor; kullanici koleksiyonunda aranıyor...";
+        try {
+          const resp = await fetch(`${authGetApiBase()}/project-posts/${post.id}/candidate-suggestions/?top_k=6`, {
+            method: "GET",
+            headers: authHeaders(),
+          });
+          const data = await authParseResponse(resp);
+          renderCandidateSuggestions(data.matches || []);
+          meta.textContent = `${(data.matches || []).length} aday bulundu (kaynak: ${data.source || "hybrid"}). ${
+            data.dropped_low_match_count ? `${data.dropped_low_match_count} dusuk eslesme gizlendi.` : ""
+          }`;
+        } catch (error) {
+          renderCandidateSuggestions([]);
+          meta.textContent = error.message || "Aday onerileri su an yuklenemiyor.";
+        }
+      }
+
+      async function loadDetail() {
+        const id = getQueryId();
+        if (id && String(id).startsWith("local_")) {
+          const localPost = coforgeLoadLocalProjectPost(id);
+          if (localPost) {
+            fillDetail(localPost);
+            return;
+          }
+          document.getElementById("detailTitle").textContent = "Ilan bulunamadi";
+          document.getElementById("detailDescription").textContent = "Bu yerel ilan bulunamadi veya silinmis olabilir.";
+          return;
+        }
+        try {
+          const endpoint = id ? `${authGetApiBase()}/project-posts/${id}/` : `${authGetApiBase()}/project-posts/`;
+          const resp = await fetch(endpoint, { method: "GET", headers: authHeadersForPublicRead() });
+          const data = await authParseResponse(resp);
+          const post = Array.isArray(data) ? data[0] : data.results ? data.results[0] : data;
+          if (!post || (Array.isArray(post) && !post.length)) throw new Error("Ilan bulunamadi.");
+          fillDetail(post);
+          if (post.id) {
+            await loadRecruitmentSuggestions(post);
+          }
+        } catch (error) {
+          document.getElementById("detailTitle").textContent = "Ilan detayi yuklenemedi";
+          document.getElementById("detailDescription").textContent = error.message || "Lutfen daha sonra tekrar dene.";
+          currentDetailPost = null;
+          updateOwnerToolbar(null);
+        }
+      }
+
+      initGlobalBackgroundSpotlight();
+      document.getElementById("btnDeletePost")?.addEventListener("click", () => openDeleteIlanModal());
+      document.getElementById("btnConfirmDeleteIlan")?.addEventListener("click", () => confirmDeleteIlan());
+      document.getElementById("btnCancelDeleteIlan")?.addEventListener("click", () => closeDeleteIlanModal());
+      document.querySelector("#deleteIlanModal [data-close-delete-modal='true']")?.addEventListener("click", () => closeDeleteIlanModal());
+
+      // ── Esleme Istegi Gonder butonu ──────────────────────────────────────
+      document.getElementById("btnMatchRequest")?.addEventListener("click", async function () {
+        const btn = document.getElementById("btnMatchRequest");
+        if (!btn || btn.disabled) return;
+
+        // Anlik gorsel geri bildirim
+        btn.disabled = true;
+        btn.textContent = "Esleme Istegi Gonderildi";
+        btn.style.backgroundColor = "#28a745";
+        btn.style.borderColor = "#28a745";
+        btn.style.color = "#ffffff";
+        btn.style.cursor = "not-allowed";
+        btn.style.opacity = "1";
+
+        // Backend API cagrisi — POST /api/match-request/
+        try {
+          const post = currentDetailPost;
+          if (post?.id) {
+            await fetch(`${authGetApiBase()}/match-request/`, {
+              method: "POST",
+              headers: { ...authHeaders(), "Content-Type": "application/json" },
+              body: JSON.stringify({ project_id: post.id }),
+            });
+          }
+        } catch (_e) {
+          // Endpoint henuz aktif degilse sessizce gec; gorsel durum korunur
+        }
+      });
+
+      loadDetail();
+    </script>
+  </body>
+</html>

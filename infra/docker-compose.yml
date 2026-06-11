@@ -1,0 +1,101 @@
+# CoForge altyapisi. Calistirma: bu klasorde `docker compose up -d`
+# Milvus'un 19530'u dinlemesi icin etcd + minio saglikli olmalidir; aksi halde port yayinlanmaz.
+name: coforge-infra
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: coforge-mysql
+    environment:
+      MYSQL_DATABASE: coforge
+      MYSQL_USER: coforge
+      MYSQL_PASSWORD: coforge_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.15
+    container_name: coforge-etcd
+    # URL bayraklari yalnizca command ile verilir; env + CLI ikisi birden etcd 3.5+ "shadowed" hatasina yol acar.
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+      - ETCD_ENABLE_V2=true
+      - ALLOW_NONE_AUTHENTICATION=yes
+    command: >
+      etcd
+      --data-dir=/etcd
+      --listen-client-urls=http://0.0.0.0:2379
+      --advertise-client-urls=http://etcd:2379
+    ports:
+      - "127.0.0.1:2379:2379"
+    volumes:
+      - etcd_data:/etcd
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+      start_period: 10s
+
+  minio:
+    image: minio/minio:RELEASE.2024-10-13T13-34-11Z
+    container_name: coforge-minio
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    command: server /minio_data --console-address ":9001"
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - minio_data:/minio_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  milvus:
+    image: milvusdb/milvus:v2.4.7
+    container_name: coforge-milvus
+    security_opt:
+      - seccomp:unconfined
+    depends_on:
+      etcd:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+    ports:
+      # Windows/Docker Desktop: 127.0.0.1 ile IPv4'e zorla; bos port / baglanti hatasi riskini azaltir
+      - "127.0.0.1:19530:19530"
+      - "127.0.0.1:9091:9091"
+    volumes:
+      - milvus_data:/var/lib/milvus
+    command: ["milvus", "run", "standalone"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 15s
+      timeout: 20s
+      retries: 10
+      start_period: 90s
+
+volumes:
+  mysql_data:
+  etcd_data:
+  minio_data:
+  milvus_data:

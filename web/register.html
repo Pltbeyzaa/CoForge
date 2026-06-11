@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoForge — Kayıt</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="dark-grid-bg auth-theme-page">
+    <header class="auth-topbar">
+      <div class="container auth-topbar-inner">
+        <a class="brand" href="login.html"><h1 class="logo-text">CoForge</h1></a>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema degistir"></button>
+      </div>
+    </header>
+
+    <main class="auth-main">
+      <section class="auth-shell">
+        <article class="auth-card">
+          <div class="auth-card-head">
+            <h1 class="auth-title">Create Account</h1>
+            <p class="auth-subtitle">Profilini olustur, yetkinliklerini ekle ve AI destekli ekiplere baglan.</p>
+          </div>
+
+          <div class="auth-form-grid two-col">
+            <label>
+              <span class="field-label">Ad</span>
+              <input id="firstName" class="input" type="text" placeholder="Beyza" />
+            </label>
+            <label>
+              <span class="field-label">Soyad</span>
+              <input id="lastName" class="input" type="text" placeholder="Polat" />
+            </label>
+          </div>
+
+          <div class="auth-form-grid" style="margin-top: 0.8rem">
+            <label>
+              <span class="field-label">E-posta</span>
+              <input id="email" class="input" type="email" placeholder="ornek@coforge.dev" />
+            </label>
+
+            <label>
+              <span class="field-label">Kullanici Rolu</span>
+              <select id="role" class="select">
+                <option value="">Rol secin</option>
+                <option value="developer">Yazilim Gelistirici</option>
+                <option value="founder">Proje Sahibi / Girisimci</option>
+                <option value="student">Ogrenci</option>
+              </select>
+            </label>
+
+            <label>
+              <span class="field-label">GitHub / Portfolyo (Opsiyonel)</span>
+              <input id="portfolioUrl" class="input" type="url" placeholder="https://github.com/kullanici" />
+            </label>
+
+            <label>
+              <span class="field-label">Sifre</span>
+              <input id="password" class="input" type="password" placeholder="••••••••" />
+              <div class="password-hint">En az 8 karakter, buyuk harf ve rakam onerilir.</div>
+            </label>
+
+            <label>
+              <span class="field-label">Sifre Tekrar</span>
+              <input id="passwordConfirm" class="input" type="password" placeholder="••••••••" />
+            </label>
+
+            <div class="strength"><span id="strengthBar"></span></div>
+            <p id="strengthText" class="password-hint">Sifre gucu: -</p>
+
+            <label class="check-row">
+              <input id="acceptTerms" type="checkbox" />
+              <span>
+                <a class="legal-link" href="#" data-modal="termsModal">Kullanim Kosullari'ni</a> okudum ve kabul ediyorum.
+              </span>
+            </label>
+            <label class="check-row">
+              <input id="acceptConsent" type="checkbox" />
+              <span>
+                Kisisel verilerimin islenmesine dair
+                <a class="legal-link" href="#" data-modal="consentModal">Acik Riza Metni'ni</a> onayliyorum.
+              </span>
+            </label>
+
+            <button id="btnRegister" class="btn btn-auth-submit" type="button">Kayit Ol</button>
+            <p id="registerMeta" class="auth-meta" role="status" aria-live="polite">Yeni hesap olustur.</p>
+            <p class="auth-link">Hesabin var mi? <a href="login.html">Giris yap</a></p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div id="termsModal" class="auth-legal-modal" aria-hidden="true">
+      <div class="auth-legal-dialog">
+        <div class="auth-legal-head">
+          <h3>Kullanim Kosullari ve Uyelik Sozlesmesi</h3>
+          <button class="auth-legal-close" type="button" data-close-modal="termsModal">×</button>
+        </div>
+        <pre class="auth-legal-content">1. KULLANIM KOŞULLARI VE ÜYELİK SÖZLEŞMESİ
+MADDE 1 - TARAFLAR VE KAPSAM
+İşbu Kullanım Koşulları ve Üyelik Sözleşmesi ("Sözleşme"), CoForge platformunu ("Platform") kullanan tüm kayıtlı üyeler ("Kullanıcı") ile Platform yönetimi arasında elektronik ortamda onaylandığı an itibarıyla yürürlüğe girmiştir. Platforma kayıt olan her Kullanıcı, bu sözleşmedeki tüm maddeleri okuduğunu, anladığını ve kabul ettiğini beyan eder.
+
+MADDE 2 - PLATFORMUN AMACI VE HİZMET TANIMI
+CoForge; yazılım geliştiricileri, proje sahiplerini ve öğrencileri yetkinlik (skill) bazlı olarak eşleştiren, Yapay Zeka (AI) destekli otonom bir proje yönetimi ve takım çalışma platformudur. Platform, Kullanıcıların profillerini analiz eder, eşleşme sağlar ve projelerin alt görevlere bölünerek takip edilmesine yardımcı olur. CoForge bir kod barındırma (hosting), ödeme/freelance pazar yeri veya doğrudan yazılım derleme aracı değildir.
+
+MADDE 3 - KULLANICI HAK VE YÜKÜMLÜLÜKLERİ
+Doğru Bilgi Beyanı: Kullanıcı, kayıt esnasında veya profilini oluştururken (yazılım dilleri, yetkinlik seviyesi, GitHub linki vb.) verdiği tüm bilgilerin doğru, güncel ve kendisine ait olduğunu taahhüt eder.
+Hesap Güvenliği: Kullanıcı, hesap giriş bilgilerinin (e-posta ve şifre) güvenliğinden tek başına sorumludur. Hesabın üçüncü şahıslar tarafından izinsiz kullanımından doğacak zararlardan CoForge sorumlu tutulamaz.
+Platform İçi İletişim ve Davranış Kuralları: Kullanıcılar, takım içi iletişimde profesyonellik sınırları içinde kalmak zorundadır. Eşleşilen takım üyelerine karşı hakaret, ayrımcılık, tehdit veya taciz içeren söylemlerde bulunmak hesabın kalıcı olarak kapatılma sebebidir.
+Ticari Faaliyet Yasağı: CoForge üzerinden eşleşen takımlar kendi aralarında anlaşarak projelerini ticari bir ürüne dönüştürebilirler. Ancak Platform içi mesajlaşma ve eşleşme altyapısı, doğrudan reklam yapmak, spam mesaj göndermek veya yasa dışı hizmet satışı yapmak amacıyla kullanılamaz.
+
+MADDE 4 - 360 DERECE DEĞERLENDİRME VE GÜVENİLİRLİK SKORU
+Kullanıcı, dahil olduğu projelerin bitiminde diğer takım üyeleri tarafından değerlendirilebileceğini ve kendisinin de diğer üyeleri değerlendireceğini kabul eder. Bu değerlendirmeler NLP (Doğal Dil İşleme) algoritmaları ile analiz edilerek Kullanıcı profiline dinamik bir "Güvenilirlik ve Başarı Skoru" olarak yansıtılacaktır. Kullanıcı, bu skorun otomatik hesaplandığını ve Platformun bu puanlama üzerinde manipülasyon yapmadığını kabul eder.
+
+MADDE 5 - SORUMLULUKLARIN SINIRLANDIRILMASI
+CoForge, yalnızca bir "eşleştirme ve süreç yönetim aracı" işlevi görmektedir. Eşleşen Kullanıcıların projeyi tamamlayamaması, kod hırsızlığı yapması, fikir haklarını (fikri mülkiyet) ihlal etmesi veya takım içi anlaşmazlıklar yaşaması durumunda CoForge hiçbir hukuki, cezai veya maddi sorumluluk kabul etmez. Taraflar arasındaki her türlü anlaşmazlık kendi içlerinde çözülmelidir.
+
+MADDE 6 - FESİH
+Kullanıcı, dilediği zaman Platform üzerindeki hesabını silerek sözleşmeyi tek taraflı feshedebilir. CoForge yönetimi ise Kullanıcının işbu sözleşme kurallarını ihlal etmesi durumunda haber vermeksizin hesabı askıya alma veya tamamen silme hakkını saklı tutar.</pre>
+      </div>
+    </div>
+
+    <div id="consentModal" class="auth-legal-modal" aria-hidden="true">
+      <div class="auth-legal-dialog">
+        <div class="auth-legal-head">
+          <h3>KVKK Acik Riza Metni</h3>
+          <button class="auth-legal-close" type="button" data-close-modal="consentModal">×</button>
+        </div>
+        <pre class="auth-legal-content">2. KİŞİSEL VERİLERİN İŞLENMESİNE İLİŞKİN AÇIK RIZA METNİ
+6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında, CoForge ("Veri Sorumlusu") tarafından sunulan Yapay Zeka destekli eşleştirme ve proje yönetimi hizmetlerinden tam anlamıyla faydalanabilmem için aşağıda belirtilen kişisel verilerimin, belirtilen amaçlarla işlenmesine ve ilgili altyapılara aktarılmasına özgür irademle açık rıza gösteriyorum.
+
+1. İşlenecek Kişisel Verilerim:
+Adım, soyadım, e-posta adresim, mesleki rolüm (öğrenci, geliştirici, girişimci), beyan ettiğim yazılım yetkinlikleri, GitHub/Portfolyo bağlantılarım, oluşturduğum veya dahil olduğum proje metinleri, takım içi mesajlaşmalarım ve proje sonu 360 derece değerlendirme formlarına girdiğim serbest metinler.
+
+2. Kişisel Verilerin İşlenme Amaçları:
+Akıllı Eşleştirme: Profilime eklediğim yetkinliklerin ve yazılım dillerinin, sistemdeki proje ilanlarıyla anlamsal (semantic) olarak eşleştirilmesi için Yapay Zeka ve Doğal Dil İşleme (NLP) algoritmaları tarafından analiz edilmesi.
+Otonom Yönetim: Takımımla beraber üzerinde çalıştığım projenin açıklamalarının yapay zeka tarafından okunarak, haftalık görev listelerine (Backlog/Sprint) ve Gantt diyagramlarına dönüştürülmesi.
+Skorlama Sistemi: Proje bitiminde takım arkadaşlarımın benim hakkımda, benim de onlar hakkında yazdığım değerlendirme metinlerinin NLP ile analiz edilerek profilimde sergilenecek olan "Güvenilirlik ve Başarı Skoru"nun hesaplanması.
+Güvenlik ve İyileştirme: Sistem performansını ölçmek ve hileli (spam) değerlendirmeleri tespit etmek amacıyla kullanım verilerimin analiz edilmesi.
+
+3. Verilerin Aktarımı (Yurtiçi ve Yurtdışı):
+CoForge'un temelini oluşturan yapay zeka ve metin analizi fonksiyonlarının çalışabilmesi için; ilan ve yetkinlik metinlerimin Vektör Veritabanı (Milvus) altyapısına kaydedilmesini, işlenmesini ve metin analizi işlemleri için yurtdışı merkezli bulut tabanlı API hizmet sağlayıcılarına (Örn: OpenAI API altyapısı) güvenli bir şekilde aktarılmasını kabul ediyorum.
+
+Yukarıda yer alan bilgilendirme metnini okuduğumu, anladığımı ve CoForge platformunun doğası gereği yapay zeka algoritmalarının bu verilerimi işlemesi gerektiğini bilerek, kişisel verilerimin işlenmesine ve belirtilen şartlarda aktarılmasına kabul ve beyan ederim.</pre>
+      </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+      coforgeInitTheme();
+
+      function initGlobalBackgroundSpotlight() {
+        const root = document.body;
+        root.style.setProperty("--bg-mouse-x", "50vw");
+        root.style.setProperty("--bg-mouse-y", "35vh");
+        window.addEventListener("mousemove", (event) => {
+          root.style.setProperty("--bg-mouse-x", `${event.clientX}px`);
+          root.style.setProperty("--bg-mouse-y", `${event.clientY}px`);
+        });
+      }
+
+      function bindLegalModals() {
+        document.querySelectorAll("[data-modal]").forEach((link) => {
+          link.addEventListener("click", (event) => {
+            event.preventDefault();
+            const modalId = link.getAttribute("data-modal");
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add("open");
+          });
+        });
+
+        document.querySelectorAll("[data-close-modal]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const modalId = button.getAttribute("data-close-modal");
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.remove("open");
+          });
+        });
+
+        document.querySelectorAll(".auth-legal-modal").forEach((modal) => {
+          modal.addEventListener("click", (event) => {
+            if (event.target === modal) modal.classList.remove("open");
+          });
+        });
+      }
+
+      initGlobalBackgroundSpotlight();
+      bindLegalModals();
+
+      if (!redirectIfAuthenticated()) {
+        const meta = document.getElementById("registerMeta");
+        const passwordInput = document.getElementById("password");
+        const passwordConfirmInput = document.getElementById("passwordConfirm");
+        const strengthBar = document.getElementById("strengthBar");
+        const strengthText = document.getElementById("strengthText");
+
+        function evaluateStrength(password) {
+          let score = 0;
+          if (password.length >= 8) score += 1;
+          if (/[A-Z]/.test(password)) score += 1;
+          if (/[0-9]/.test(password)) score += 1;
+          if (/[^A-Za-z0-9]/.test(password)) score += 1;
+          return score;
+        }
+
+        function updateStrengthUI() {
+          const password = passwordInput.value;
+          const score = evaluateStrength(password);
+          const widths = ["0%", "25%", "50%", "75%", "100%"];
+          const labels = ["-", "Zayıf", "Orta", "İyi", "Güçlü"];
+          const colors = ["#ece7df", "#ef4444", "#f59e0b", "#3b82f6", "#22c55e"];
+          strengthBar.style.width = widths[score];
+          strengthBar.style.background = colors[score];
+          strengthText.textContent = `Şifre gücü: ${labels[score]}`;
+        }
+
+        passwordInput.addEventListener("input", updateStrengthUI);
+
+        function setRegisterMeta(text, isError) {
+          meta.textContent = text;
+          meta.classList.toggle("auth-meta-error", Boolean(isError));
+        }
+
+        function humanizeRegisterErrors(text) {
+          return String(text || "")
+            .replace(/\bemail\b/gi, "E-posta")
+            .replace(/\bfull_name\b/gi, "Ad Soyad")
+            .replace(/\bpassword\b/gi, "Sifre")
+            .replace(/\bnon_field_errors\b/gi, "Kayit")
+            .replace(/\brole\b/gi, "Rol");
+        }
+
+        function roleToProfileTitle(roleValue) {
+          const m = {
+            developer: "Yazilim Gelistirici",
+            founder: "Proje Sahibi / Girisimci",
+            student: "Ogrenci",
+          };
+          return m[roleValue] || "CoForge Uyesi";
+        }
+
+        document.getElementById("btnRegister").addEventListener("click", async () => {
+          const firstName = document.getElementById("firstName").value.trim();
+          const lastName = document.getElementById("lastName").value.trim();
+          const fullName = `${firstName} ${lastName}`.trim();
+          const email = document.getElementById("email").value.trim();
+          const role = document.getElementById("role").value;
+          const portfolioUrl = document.getElementById("portfolioUrl").value.trim();
+          const password = document.getElementById("password").value;
+          const passwordConfirm = passwordConfirmInput.value;
+          const acceptedTerms = document.getElementById("acceptTerms").checked;
+          const acceptedConsent = document.getElementById("acceptConsent").checked;
+
+          if (!firstName || !lastName || !email || !password) {
+            setRegisterMeta("Ad, soyad, e-posta ve sifre zorunludur.", true);
+            return;
+          }
+          if (!role) {
+            setRegisterMeta("Lutfen bir kullanici rolu sec.", true);
+            return;
+          }
+          if (portfolioUrl && !/^https?:\/\//i.test(portfolioUrl)) {
+            setRegisterMeta("Portfolyo baglantisi http:// veya https:// ile baslamali.", true);
+            return;
+          }
+          if (password.length < 8) {
+            setRegisterMeta("Sifre en az 8 karakter olmali (sunucu kurali).", true);
+            return;
+          }
+          if (/^\d+$/.test(password)) {
+            setRegisterMeta("Sifre yalnizca rakam olamaz; Django bu tur sifreleri reddeder.", true);
+            return;
+          }
+          if (password !== passwordConfirm) {
+            setRegisterMeta("Sifre tekrar alani eslesmiyor; ikinci sifre sunucuya gonderilmez, sadece burada kontrol edilir.", true);
+            return;
+          }
+          if (!acceptedTerms || !acceptedConsent) {
+            setRegisterMeta("Devam etmek icin her iki onayi da vermelisin.", true);
+            return;
+          }
+          setRegisterMeta("Kayit yapiliyor...", false);
+
+          const payload = {
+            full_name: fullName,
+            email,
+            password,
+            role,
+          };
+
+          try {
+            console.debug("[register] POST /auth/register/ body (sifre haric)", { ...payload, password: "[redacted]" });
+            const resp = await fetch(`${authGetApiBase()}/auth/register/`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const rawText = await resp.text();
+            let data = {};
+            try {
+              data = rawText ? JSON.parse(rawText) : {};
+            } catch (_e) {
+              data = {};
+            }
+            if (!resp.ok) {
+              console.warn("[register] HTTP", resp.status, "body:", data);
+              const summary = typeof authSummarizeApiError === "function" ? authSummarizeApiError(data) : "";
+              throw new Error(summary || data.detail || `HTTP ${resp.status}`);
+            }
+            authSetToken(data.access || "");
+            const u = data.user || {};
+            authSetCurrentUser({
+              full_name: u.full_name || fullName,
+              email: u.email || email,
+              title: roleToProfileTitle(role),
+              skills: [],
+              avatar_url: "",
+              github_url: portfolioUrl || u.github_url || "",
+            });
+            window.location.href = "index.html";
+          } catch (err) {
+            console.warn("[register] Hata:", err.message);
+            setRegisterMeta(humanizeRegisterErrors(err.message || "Kayit basarisiz."), true);
+          }
+        });
+        updateStrengthUI();
+      }
+    </script>
+  </body>
+</html>

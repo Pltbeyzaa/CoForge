@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoForge — Matchmaking</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="dark-grid-bg">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="index.html"><h1 class="logo-text">CoForge</h1></a>
+        <nav class="topbar-actions">
+          <a class="btn btn-primary" href="ilan-ekle.html">Ilan Olustur</a>
+          <a class="btn btn-ghost" href="index.html">Ana Sayfa</a>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema degistir"></button>
+          <div class="profile-menu" id="profileMenu">
+            <button
+              id="profileMenuToggle"
+              class="profile-menu-toggle"
+              type="button"
+              aria-label="Hesap menusu"
+              aria-haspopup="menu"
+              aria-expanded="false"
+            ></button>
+            <div class="profile-dropdown" role="menu" aria-label="Hesap islemleri">
+              <a href="kullanici-profil.html" role="menuitem">
+                <span class="menu-icon" aria-hidden="true">👤</span>
+                Profil
+              </a>
+              <a href="kullanici-profil.html#profile-ilanlar" role="menuitem">
+                <span class="menu-icon" aria-hidden="true">📁</span>
+                Ilanlarim
+              </a>
+              <button id="btnLogoutMenu" class="danger" type="button" role="menuitem">
+                <span class="menu-icon" aria-hidden="true">⏻</span>
+                Cikis
+              </button>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page matchmaking-page">
+      <section class="container">
+        <article class="matchboard-glass">
+          <header class="matchboard-head">
+            <h1>Senin Icin Onerilen Projeler</h1>
+            <p>Yapay zeka profilini analiz ederek en uygun eslesmeleri buldu.</p>
+          </header>
+
+          <div id="matchMeta" class="match-meta">AI eslestirme analizi baslatiliyor...</div>
+          <div id="matchResultArea"></div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>CoForge Platform</p>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="matchmaking.js"></script>
+  </body>
+</html>
+

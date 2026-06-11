@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoForge — Ilani Duzenle</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="dark-grid-bg">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="index.html"><h1 class="logo-text">CoForge</h1></a>
+        <nav class="topbar-actions">
+          <a class="btn btn-ghost" href="index.html">Ana Sayfa</a>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema degistir"></button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page post-builder-page">
+      <section class="container post-builder-shell">
+        <article class="post-builder-glass">
+          <header class="post-builder-head">
+            <h1>Ilani Duzenle</h1>
+            <p id="editMeta">Ilan yukleniyor...</p>
+          </header>
+
+          <div class="post-form-grid">
+            <label class="full-width">
+              <span class="post-label">Proje Basligi</span>
+              <input id="editTitle" type="text" class="post-input" />
+            </label>
+            <label>
+              <span class="post-label">Maksimum Takim Boyutu</span>
+              <input id="editTeamSize" type="number" min="1" class="post-input" />
+            </label>
+            <label class="full-width">
+              <span class="post-label">Proje Aciklamasi</span>
+              <textarea id="editDescription" rows="8" class="post-textarea"></textarea>
+            </label>
+            <label class="full-width">
+              <span class="post-label">Gerekli Yetkinlikler (virgulle ayirin)</span>
+              <textarea id="editSkills" rows="3" class="post-textarea" placeholder="Ornek: Python, Django, PostgreSQL"></textarea>
+            </label>
+            <div class="full-width" style="display: flex; gap: 0.65rem; flex-wrap: wrap">
+              <button id="btnSaveEdit" class="btn btn-primary" type="button">Guncelle</button>
+              <a class="btn btn-ghost" id="linkBackDetail" href="ilan-detay.html">Iptal</a>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>CoForge Platform</p>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+      requireAuth();
+      coforgeInitTheme();
+
+      const LOCAL_PREFIX = "coforge_local_post_";
+
+      function getQueryId() {
+        return new URLSearchParams(window.location.search).get("id");
+      }
+
+      function emailsMatch(a, b) {
+        return String(a || "").trim().toLowerCase() === String(b || "").trim().toLowerCase();
+      }
+
+      function skillNamesFromPost(post) {
+        const det = post.required_skills_detail || [];
+        if (Array.isArray(det) && det.length) {
+          return det.map((x) => x.skill_name || x.name || "").filter(Boolean);
+        }
+        return [];
+      }
+
+      function normalizeSkillsTextarea(text) {
+        return String(text || "")
+          .split(/[,;\n]+/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+
+      async function ensureSkillIdsByNames(names) {
+        const listResp = await fetch(`${authGetApiBase()}/skills/`, {
+          method: "GET",
+          headers: authHeaders(),
+        });
+        const skillList = await authParseResponse(listResp);
+        const idByName = new Map(
+          (skillList || [])
+            .filter((s) => s && s.name)
+            .map((s) => [String(s.name).trim().toLowerCase(), s.id])
+        );
+        const resolved = [];
+        for (const name of names) {
+          const key = String(name).trim().toLowerCase();
+          if (!key) continue;
+          let foundId = idByName.get(key);
+          if (!foundId) {
+            const createResp = await fetch(`${authGetApiBase()}/skills/`, {
+              method: "POST",
+              headers: authHeaders(true),
+              body: JSON.stringify({ name: name.trim() }),
+            });
+            const created = await authParseResponse(createResp);
+            foundId = created.id;
+            idByName.set(key, foundId);
+          }
+          if (foundId) resolved.push(foundId);
+        }
+        return Array.from(new Set(resolved));
+      }
+
+      function updateUserProjectsCache(postId, patch) {
+        const user = authGetCurrentUser() || {};
+        const email = String(user.email || "").trim().toLowerCase();
+        if (!email) return;
+        const key = `coforge_projects_${email}`;
+        let list = [];
+        try {
+          const raw = (localStorage.getItem(key) || "").trim();
+          list = raw ? JSON.parse(raw) : [];
+          if (!Array.isArray(list)) list = [];
+        } catch (_e) {
+          list = [];
+        }
+        const idx = list.findIndex((p) => String(p?.id) === String(postId));
+        if (idx >= 0) {
+          list[idx] = { ...list[idx], ...patch };
+          localStorage.setItem(key, JSON.stringify(list));
+        }
+      }
+
+      let initialSnapshot = { title: "", description: "", max_team_size: null, skillsKey: "" };
+      let loadedPost = null;
+
+      async function loadPost() {
+        const meta = document.getElementById("editMeta");
+        const id = getQueryId();
+        if (!id) {
+          if (meta) meta.textContent = "Ilan ID eksik.";
+          return;
+        }
+        const back = document.getElementById("linkBackDetail");
+        if (back) back.href = `ilan-detay.html?id=${encodeURIComponent(id)}`;
+
+        const me = authGetCurrentUser() || {};
+
+        if (String(id).startsWith("local_")) {
+          const rawKey = `${LOCAL_PREFIX}${id}`;
+          const raw = (localStorage.getItem(rawKey) || "").trim();
+          if (!raw) {
+            if (meta) meta.textContent = "Yerel ilan bulunamadi.";
+            return;
+          }
+          let post;
+          try {
+            post = JSON.parse(raw);
+          } catch (_e) {
+            if (meta) meta.textContent = "Yerel ilan okunamadi.";
+            return;
+          }
+          if (!emailsMatch(me.email, post.owner_email)) {
+            if (meta) meta.textContent = "Bu ilani duzenleme yetkiniz yok.";
+            return;
+          }
+          loadedPost = post;
+          document.getElementById("editTitle").value = post.title || "";
+          document.getElementById("editDescription").value = post.description || "";
+          document.getElementById("editTeamSize").value = post.max_team_size || 4;
+          const sn = skillNamesFromPost(post);
+          document.getElementById("editSkills").value = sn.join(", ");
+          initialSnapshot = {
+            title: (post.title || "").trim(),
+            description: (post.description || "").trim(),
+            max_team_size: post.max_team_size != null ? Number(post.max_team_size) : null,
+            skillsKey: sn
+              .map((s) => s.trim().toLowerCase())
+              .sort()
+              .join("|"),
+          };
+          if (meta) meta.textContent = "Yerel ilan (mock / offline). Degisiklikler cihazda saklanir.";
+          return;
+        }
+
+        try {
+          const resp = await fetch(`${authGetApiBase()}/project-posts/${id}/`, {
+            method: "GET",
+            headers: authHeadersForPublicRead(),
+          });
+          const post = await authParseResponse(resp);
+          if (!emailsMatch(me.email, post.owner_email)) {
+            if (meta) meta.textContent = "Bu ilani duzenleme yetkiniz yok.";
+            return;
+          }
+          loadedPost = post;
+          document.getElementById("editTitle").value = post.title || "";
+          document.getElementById("editDescription").value = post.description || "";
+          document.getElementById("editTeamSize").value = post.max_team_size || "";
+          const sn = skillNamesFromPost(post);
+          document.getElementById("editSkills").value = sn.join(", ");
+          initialSnapshot = {
+            title: (post.title || "").trim(),
+            description: (post.description || "").trim(),
+            max_team_size: post.max_team_size != null ? Number(post.max_team_size) : null,
+            skillsKey: sn
+              .map((s) => s.trim().toLowerCase())
+              .sort()
+              .join("|"),
+          };
+          if (meta) meta.textContent = `Ilan #${post.id} — degisen alanlar sunucuya PATCH ile gider.`;
+        } catch (error) {
+          if (meta) meta.textContent = error.message || "Ilan yuklenemedi.";
+        }
+      }
+
+      async function savePost() {
+        const meta = document.getElementById("editMeta");
+        const btn = document.getElementById("btnSaveEdit");
+        const id = getQueryId();
+        if (!id || !loadedPost) return;
+
+        const title = document.getElementById("editTitle").value.trim();
+        const description = document.getElementById("editDescription").value.trim();
+        const teamRaw = document.getElementById("editTeamSize").value.trim();
+        const max_team_size = teamRaw === "" ? null : parseInt(teamRaw, 10);
+        const skillNames = normalizeSkillsTextarea(document.getElementById("editSkills").value);
+        const skillsKey = skillNames
+          .map((s) => s.trim().toLowerCase())
+          .sort()
+          .join("|");
+
+        if (!title || !description) {
+          if (meta) meta.textContent = "Baslik ve aciklama zorunludur.";
+          return;
+        }
+
+        const body = {};
+        if (title !== initialSnapshot.title) body.title = title;
+        if (description !== initialSnapshot.description) body.description = description;
+        if (max_team_size !== initialSnapshot.max_team_size) body.max_team_size = max_team_size;
+        if (skillsKey !== initialSnapshot.skillsKey) {
+          if (!skillNames.length) {
+            if (meta) meta.textContent = "En az bir yetkinlik girin.";
+            return;
+          }
+          try {
+            const ids = await ensureSkillIdsByNames(skillNames);
+            body.required_skills = ids.map((sid) => ({ skill_id: sid, priority: 1 }));
+          } catch (error) {
+            if (meta) meta.textContent = error.message || "Yetkinlikler cozulemedi.";
+            return;
+          }
+        }
+
+        if (!Object.keys(body).length) {
+          if (typeof coforgeShowToast === "function") coforgeShowToast("Degisiklik yok.", true);
+          return;
+        }
+
+        btn.disabled = true;
+        if (meta) meta.textContent = "Kaydediliyor...";
+
+        try {
+          if (String(id).startsWith("local_")) {
+            const detail = skillNames.map((name) => ({ skill_name: name }));
+            const updated = {
+              ...loadedPost,
+              title,
+              description,
+              max_team_size,
+              required_skills_detail: detail,
+            };
+            localStorage.setItem(`${LOCAL_PREFIX}${id}`, JSON.stringify(updated));
+            updateUserProjectsCache(id, {
+              title,
+              description,
+              max_team_size,
+              skills: skillNames.map((name) => ({ name })),
+              required_skills_detail: detail,
+            });
+            coforgeFlashToast("Ilan basariyla guncellendi");
+            window.location.href = `ilan-detay.html?id=${encodeURIComponent(id)}`;
+            return;
+          }
+
+          if (typeof authIsMockSession === "function" && authIsMockSession()) {
+            if (meta) meta.textContent = "Mock oturumda sunucu guncellemesi yapilamaz.";
+            if (typeof coforgeShowToast === "function") coforgeShowToast("Mock oturumda PATCH yapilamaz.", true);
+            btn.disabled = false;
+            return;
+          }
+
+          const resp = await fetch(`${authGetApiBase()}/projects/${id}/`, {
+            method: "PATCH",
+            headers: authHeaders(true),
+            body: JSON.stringify(body),
+          });
+          await authParseResponse(resp);
+          coforgeFlashToast("Ilan basariyla guncellendi");
+          window.location.href = `ilan-detay.html?id=${encodeURIComponent(id)}`;
+        } catch (error) {
+          if (meta) meta.textContent = error.message || "Guncelleme basarisiz.";
+          if (typeof coforgeShowToast === "function") coforgeShowToast(error.message || "Guncellenemedi", true);
+          btn.disabled = false;
+        }
+      }
+
+      document.getElementById("btnSaveEdit")?.addEventListener("click", savePost);
+      loadPost();
+    </script>
+  </body>
+</html>

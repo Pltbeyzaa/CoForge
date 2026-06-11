@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoForge — Profil Ayarlari</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="dark-grid-bg">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="index.html"><h1 class="logo-text">CoForge</h1></a>
+        <nav class="topbar-actions">
+          <a class="btn btn-ghost" href="kullanici-profil.html">Profile Don</a>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema degistir"></button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page settings-page">
+      <section class="container settings-layout">
+        <aside class="settings-nav glass-panel">
+          <h2 class="settings-nav-title">Ayarlar</h2>
+          <a class="settings-nav-item active" href="#">Profil</a>
+          <a class="settings-nav-item disabled" href="#">Hesap Guvenligi</a>
+          <a class="settings-nav-item disabled" href="#">Bildirimler</a>
+        </aside>
+
+        <section class="glass-panel settings-main">
+          <div class="settings-head">
+            <h1>Profil Ayarlari</h1>
+            <p>Profil bilgilerini guncelle, fotografinizi yukle ve teknik yetkinliklerinizi yonetin.</p>
+          </div>
+
+          <form id="profileSettingsForm" class="settings-form" novalidate>
+            <div class="avatar-drop-row">
+              <label id="dropZone" class="avatar-drop-zone" for="avatarFileInput">
+                <input id="avatarFileInput" type="file" accept="image/*" hidden />
+                <div class="avatar-preview-wrap">
+                  <div id="avatarPreviewMount" class="avatar-preview-fill"></div>
+                  <div class="avatar-hover-layer">
+                    <span class="avatar-camera-icon">📷</span>
+                  </div>
+                </div>
+                <div class="avatar-drop-copy">
+                  <span class="avatar-drop-title">Yeni Fotograf Yukle</span>
+                  <span class="avatar-drop-subtitle">Dosyayi surukleyip birakin veya tiklayin</span>
+                </div>
+              </label>
+            </div>
+
+            <label>
+              <span class="field-label">Ad Soyad</span>
+              <input id="editFullName" class="input settings-input" type="text" value="" />
+            </label>
+
+            <label>
+              <span class="field-label">Unvan / Bolum</span>
+              <input id="editTitle" class="input settings-input" type="text" value="" />
+            </label>
+
+            <label>
+              <span class="field-label">Biyografi</span>
+              <textarea id="editBio" class="input settings-textarea" rows="5"></textarea>
+            </label>
+
+            <label>
+              <span class="field-label">Yetkinlikler (Virgulle ayir)</span>
+              <input id="editSkills" class="input settings-input" type="text" value="" />
+            </label>
+
+            <div class="settings-social-head">
+              <span class="field-label">Sosyal Profiller</span>
+            </div>
+
+            <label>
+              <span class="field-label">GitHub Profil Linki</span>
+              <input id="editGithubUrl" class="input settings-input" type="text" placeholder="https://github.com/kullaniciadi" value="" />
+            </label>
+
+            <label>
+              <span class="field-label">LinkedIn Profil Linki</span>
+              <input id="editLinkedinUrl" class="input settings-input" type="text" placeholder="https://www.linkedin.com/in/kullaniciadi/" value="" />
+            </label>
+
+            <div class="settings-actions">
+              <button id="saveSettingsBtn" class="btn settings-save-btn" type="submit" disabled>Degisiklikleri Kaydet</button>
+            </div>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>CoForge Platform</p>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+      requireAuth();
+      authRequireCurrentUser();
+      coforgeInitTheme();
+
+      function initGlobalBackgroundSpotlight() {
+        const root = document.body;
+        root.style.setProperty("--bg-mouse-x", "50vw");
+        root.style.setProperty("--bg-mouse-y", "35vh");
+        window.addEventListener("mousemove", (event) => {
+          root.style.setProperty("--bg-mouse-x", `${event.clientX}px`);
+          root.style.setProperty("--bg-mouse-y", `${event.clientY}px`);
+        });
+      }
+
+      async function initProfileSettingsForm() {
+        const form = document.getElementById("profileSettingsForm");
+        const saveButton = document.getElementById("saveSettingsBtn");
+        const fileInput = document.getElementById("avatarFileInput");
+        const dropZone = document.getElementById("dropZone");
+        const avatarPreviewMount = document.getElementById("avatarPreviewMount");
+        const trackedFields = Array.from(form.querySelectorAll("input[type='text'], textarea"));
+        let initialSnapshot = trackedFields.map((field) => field.value);
+        let imageChanged = false;
+        let pendingAvatarSrc = "";
+        const defaultButtonText = "Degisiklikleri Kaydet";
+        const AVATAR_STORAGE_KEY = "userProfilePic";
+
+        function getStoredAvatar() {
+          return (localStorage.getItem(AVATAR_STORAGE_KEY) || "").trim();
+        }
+
+        function applyAvatarToPage(src) {
+          const trimmed = String(src || "").trim();
+          if (avatarPreviewMount && typeof coforgeRenderAvatarTo === "function") {
+            coforgeRenderAvatarTo(avatarPreviewMount, trimmed, "settings");
+          }
+          const profileMount = document.getElementById("profileAvatarMount");
+          if (profileMount && typeof coforgeRenderAvatarTo === "function") {
+            coforgeRenderAvatarTo(profileMount, trimmed, "profile");
+          }
+          document.querySelectorAll("img[data-user-avatar]").forEach((imgEl) => {
+            if (imgEl && imgEl.tagName === "IMG") imgEl.src = trimmed;
+          });
+        }
+
+        const initialStoredAvatar = getStoredAvatar();
+        if (initialStoredAvatar) {
+          pendingAvatarSrc = initialStoredAvatar;
+          if (avatarPreviewMount && typeof coforgeRenderAvatarTo === "function") {
+            coforgeRenderAvatarTo(avatarPreviewMount, initialStoredAvatar, "settings");
+          }
+        } else if (avatarPreviewMount && typeof coforgeRenderAvatarTo === "function") {
+          coforgeRenderAvatarTo(avatarPreviewMount, "", "settings");
+        }
+
+        let currentUser = authRequireCurrentUser();
+        const refreshedUser = await authRefreshCurrentUserFromBackend();
+        if (refreshedUser) currentUser = refreshedUser;
+        if (currentUser) {
+          document.getElementById("editFullName").value = currentUser.full_name || "";
+          document.getElementById("editTitle").value = currentUser.title || "";
+          document.getElementById("editBio").value = currentUser.bio || "";
+          document.getElementById("editSkills").value = Array.isArray(currentUser.skills) ? currentUser.skills.join(", ") : "";
+          document.getElementById("editGithubUrl").value = currentUser.github_url || "";
+          document.getElementById("editLinkedinUrl").value = currentUser.linkedin_url || "";
+          if (currentUser.avatar_url && !initialStoredAvatar) {
+            pendingAvatarSrc = currentUser.avatar_url;
+            if (avatarPreviewMount && typeof coforgeRenderAvatarTo === "function") {
+              coforgeRenderAvatarTo(avatarPreviewMount, currentUser.avatar_url, "settings");
+            }
+          }
+        }
+
+        function showSuccessToast() {
+          const toast = document.createElement("div");
+          toast.className = "settings-toast";
+          toast.innerHTML = `
+            <span class="settings-toast-icon">✓</span>
+            <span class="settings-toast-text">Profiliniz basariyla guncellendi.</span>
+          `;
+          document.body.appendChild(toast);
+          requestAnimationFrame(() => toast.classList.add("show"));
+
+          window.setTimeout(() => {
+            toast.classList.remove("show");
+            toast.classList.add("hide");
+            window.setTimeout(() => toast.remove(), 360);
+          }, 3000);
+        }
+
+        function updateSaveState() {
+          const textChanged = trackedFields.some((field, index) => field.value !== initialSnapshot[index]);
+          if (!saveButton.dataset.busy) {
+            saveButton.disabled = !(textChanged || imageChanged);
+          }
+        }
+
+        function normalizeProfileUrl(value) {
+          const raw = String(value || "").trim();
+          if (!raw) return "";
+          if (/^https?:\/\//i.test(raw)) return raw;
+          return `https://${raw}`;
+        }
+
+        function handleFile(file) {
+          if (!file || !file.type.startsWith("image/")) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const dataUrl = String(event.target?.result || "").trim();
+            if (!dataUrl) return;
+            pendingAvatarSrc = dataUrl;
+            if (avatarPreviewMount && typeof coforgeRenderAvatarTo === "function") {
+              coforgeRenderAvatarTo(avatarPreviewMount, dataUrl, "settings");
+            }
+            imageChanged = true;
+            updateSaveState();
+          };
+          reader.readAsDataURL(file);
+        }
+
+        fileInput.addEventListener("change", (event) => {
+          handleFile(event.target.files?.[0]);
+        });
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+          dropZone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            dropZone.classList.add("drag-over");
+          });
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          dropZone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            dropZone.classList.remove("drag-over");
+          });
+        });
+
+        dropZone.addEventListener("drop", (event) => {
+          handleFile(event.dataTransfer?.files?.[0]);
+        });
+
+        trackedFields.forEach((field) => {
+          field.addEventListener("input", updateSaveState);
+        });
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          if (saveButton.dataset.busy) return;
+          saveButton.dataset.busy = "1";
+          saveButton.textContent = "Kaydediliyor...";
+          saveButton.disabled = true;
+          saveButton.classList.add("is-saving");
+          try {
+            const user = authGetCurrentUser() || {};
+            const payload = {
+              full_name: document.getElementById("editFullName").value.trim(),
+              title: document.getElementById("editTitle").value.trim(),
+              bio: document.getElementById("editBio").value.trim(),
+              github_url: normalizeProfileUrl(document.getElementById("editGithubUrl").value),
+              linkedin_url: normalizeProfileUrl(document.getElementById("editLinkedinUrl").value),
+              skills: document
+                .getElementById("editSkills")
+                .value.split(",")
+                .map((item) => item.trim())
+                .filter(Boolean),
+            };
+            const response = await fetch(`${authGetApiBase()}/me/profile/`, {
+              method: "PATCH",
+              headers: authHeaders(true),
+              body: JSON.stringify(payload),
+            });
+            const savedProfile = await authParseResponse(response);
+            const finalAvatar = pendingAvatarSrc || user.avatar_url || "";
+            if (finalAvatar) {
+              localStorage.setItem(AVATAR_STORAGE_KEY, finalAvatar);
+            } else {
+              localStorage.removeItem(AVATAR_STORAGE_KEY);
+            }
+            applyAvatarToPage(finalAvatar);
+            authSetCurrentUser({
+              ...user,
+              full_name: savedProfile.full_name || payload.full_name || "",
+              email: savedProfile.email || user.email || "",
+              title: savedProfile.title || payload.title || "",
+              bio: savedProfile.bio || payload.bio || "",
+              skills: Array.isArray(savedProfile.skills) ? savedProfile.skills : payload.skills,
+              github_url: savedProfile.github_url || payload.github_url || "",
+              linkedin_url: savedProfile.linkedin_url || payload.linkedin_url || "",
+              avatar_url: finalAvatar,
+            });
+
+            saveButton.classList.remove("is-saving");
+            saveButton.classList.add("is-success");
+            saveButton.textContent = "Kaydedildi ✅";
+            showSuccessToast();
+
+            initialSnapshot = trackedFields.map((field) => field.value);
+            imageChanged = false;
+
+            window.setTimeout(() => {
+              window.location.href = "kullanici-profil.html";
+            }, 1100);
+          } catch (error) {
+            saveButton.classList.remove("is-saving");
+            saveButton.dataset.busy = "";
+            saveButton.textContent = defaultButtonText;
+            saveButton.disabled = false;
+            updateSaveState();
+            window.alert(error?.message || "Profil kaydedilemedi.");
+          }
+        });
+      }
+
+      initGlobalBackgroundSpotlight();
+      initProfileSettingsForm();
+    </script>
+  </body>
+</html>
